@@ -19,6 +19,20 @@ public final class Tailwind {
         }
     }
 
+    public static final class Border {
+        public static final String BOTTOM = "border-b";
+
+        private Border() {
+        }
+    }
+
+    public static final class Color {
+        public static final String SECONDARY = "text-secondary";
+
+        private Color() {
+        }
+    }
+
     public static final class Display {
         public static final String FLEX = "flex";
         public static final String GRID = "grid";
@@ -188,8 +202,9 @@ public final class Tailwind {
         }
 
         public static final class Bottom {
-            public static final String XSMALL = "pb-xs";
-            public static final String LARGE = "pb-l";
+            public static final String XSMALL  = "pb-xs";
+            public static final String MEDIUM  = "pb-m";
+            public static final String LARGE   = "pb-l";
 
             private Bottom() {
             }

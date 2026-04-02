@@ -6,6 +6,17 @@ import com.vaadin.demo.ui.component.SourceViewerDialog;
 import com.vaadin.demo.ui.component.View;
 import com.vaadin.demo.ui.component.ViewHeader;
 import com.vaadin.demo.ui.util.Lucide;
+import com.vaadin.demo.ui.util.Tailwind.AlignItems;
+import com.vaadin.demo.ui.util.Tailwind.Border;
+import com.vaadin.demo.ui.util.Tailwind.Color;
+import com.vaadin.demo.ui.util.Tailwind.Display;
+import com.vaadin.demo.ui.util.Tailwind.FlexDirection;
+import com.vaadin.demo.ui.util.Tailwind.FontSize;
+import com.vaadin.demo.ui.util.Tailwind.FontWeight;
+import com.vaadin.demo.ui.util.Tailwind.Gap;
+import com.vaadin.demo.ui.util.Tailwind.Overflow;
+import com.vaadin.demo.ui.util.Tailwind.Padding;
+import com.vaadin.demo.ui.util.Tailwind.Width;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
@@ -24,8 +35,6 @@ import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
@@ -187,40 +196,26 @@ public class UsersView extends View {
         avatar.getStyle().set("--vaadin-avatar-size", "3.5rem");
 
         H3 nameSpan = new H3(user.name());
-        nameSpan.getStyle().set("margin", "0");
 
         Span emailSpan = new Span(user.email());
-        emailSpan.getStyle()
-                .set("color", "var(--vaadin-text-color-secondary)")
-                .set("font-size", "var(--aura-font-size-s)");
+        emailSpan.addClassNames(Color.SECONDARY, FontSize.SMALL);
 
-        VerticalLayout userInfo = new VerticalLayout(nameSpan, emailSpan);
-        userInfo.setPadding(false);
-        userInfo.setSpacing(false);
-        userInfo.getStyle().set("gap", "2px");
+        Div userInfo = new Div(nameSpan, emailSpan);
+        userInfo.addClassNames(Display.FLEX, FlexDirection.COLUMN);
 
-        HorizontalLayout avatarRow = new HorizontalLayout(avatar, userInfo);
-        avatarRow.setAlignItems(HorizontalLayout.Alignment.CENTER);
-        avatarRow.setWidthFull();
-        avatarRow.getStyle()
-                .set("padding-bottom", "var(--vaadin-gap-m)")
-                .set("border-bottom", "1px solid var(--vaadin-border-color)");
+        Div avatarRow = new Div(avatar, userInfo);
+        avatarRow.addClassNames(AlignItems.CENTER, Border.BOTTOM, Display.FLEX, Gap.MEDIUM, Padding.Bottom.LARGE, Width.FULL);
 
         Select<String> role = new Select<>();
         role.setLabel("Role");
         role.setItems("Admin", "Billing", "Developer", "Viewer");
         role.setValue(user.role());
-        role.setWidthFull();
 
         Span lastLogin = new Span("Last login: " + user.lastLogin());
-        lastLogin.getStyle()
-                .set("font-size", "var(--aura-font-size-xs)")
-                .set("color", "var(--aura-text-color-tertiary)");
+        lastLogin.addClassNames(Color.SECONDARY, FontSize.XSMALL);
 
-        VerticalLayout content = new VerticalLayout(avatarRow, role, lastLogin);
-        content.setPadding(false);
-        content.setSpacing(false);
-        content.getStyle().set("gap", "var(--vaadin-gap-m)");
+        Div content = new Div(avatarRow, role, lastLogin);
+        content.addClassNames(Display.FLEX, FlexDirection.COLUMN, Gap.LARGE);
         dialog.add(content);
 
         Button save = new Button("Save Changes", e -> {
