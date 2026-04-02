@@ -3,67 +3,83 @@ package com.vaadin.demo.ui.view;
 import com.vaadin.demo.data.SampleData;
 import com.vaadin.demo.service.SourceService;
 import com.vaadin.demo.ui.component.SourceViewerDialog;
+import com.vaadin.demo.ui.component.View;
+import com.vaadin.demo.ui.component.ViewHeader;
+import com.vaadin.demo.ui.util.Lucide;
+import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.badge.Badge;
+import com.vaadin.flow.component.badge.BadgeVariant;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.card.Card;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
+import static com.vaadin.demo.ui.util.Tailwind.*;
+
 @Route("products")
 @PageTitle("Products — Vaadin Demo")
-public class ProductsView extends VerticalLayout {
+public class ProductsView extends View {
 
     public ProductsView(SourceService sourceService) {
-        setSizeFull();
-        setPadding(true);
-        setSpacing(false);
-        getStyle().set("gap", "var(--vaadin-gap-m)");
+        add(createHeader(sourceService));
 
-        // Header
-        HorizontalLayout header = new HorizontalLayout();
-        header.addClassName("view-header");
-        header.setWidthFull();
-        header.setJustifyContentMode(JustifyContentMode.BETWEEN);
-        header.setAlignItems(Alignment.CENTER);
+        Div content = new Div(createProductsCard());
+        content.addClassNames(Display.FLEX, Overflow.HIDDEN, Padding.Bottom.LARGE, Padding.Horizontal.LARGE);
+        add(content);
+    }
 
-        H2 title = new H2("Products");
-        title.getStyle().set("margin", "0");
+    /**
+     * Page header with drawer toggle, title, add product button, and source viewer button.
+     */
+    private ViewHeader createHeader(SourceService sourceService) {
+        DrawerToggle toggle = new DrawerToggle();
+        toggle.addThemeVariants(ButtonVariant.TERTIARY);
 
-        HorizontalLayout headerActions = new HorizontalLayout();
-        headerActions.setSpacing(false);
-        headerActions.getStyle().set("gap", "var(--vaadin-gap-s)");
+        H1 title = new H1("Products");
 
         Button addProduct = new Button("Add Product", VaadinIcon.PLUS.create());
-        addProduct.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        addProduct.addThemeVariants(ButtonVariant.PRIMARY);
         addProduct.addClickListener(e -> openProductDialog(null));
 
-        Button viewSource = new Button(VaadinIcon.CODE.create());
-        viewSource.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON);
+        Button viewSource = new Button(Lucide.CODE.create(), e -> new SourceViewerDialog(ProductsView.class, sourceService).open());
+        viewSource.addThemeVariants(ButtonVariant.TERTIARY);
         viewSource.setAriaLabel("View source");
-        viewSource.addClickListener(e -> new SourceViewerDialog(ProductsView.class, sourceService).open());
+        viewSource.setTooltipText("View source");
 
-        headerActions.add(addProduct, viewSource);
-        header.add(title, headerActions);
-        add(header);
+        return new ViewHeader(toggle, title, addProduct, viewSource);
+    }
 
-        // Grid
+    /**
+     * Card containing the products grid.
+     */
+    private Card createProductsCard() {
+        Card card = new Card();
+        card.add(createProductsGrid());
+        card.addClassNames(Width.FULL);
+        return card;
+    }
+
+    /**
+     * Grid listing products with name, category, price, stock, status, and actions columns.
+     */
+    private Grid<SampleData.Product> createProductsGrid() {
         Grid<SampleData.Product> grid = new Grid<>(SampleData.Product.class, false);
-        grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES, GridVariant.LUMO_NO_BORDER);
+        grid.addThemeVariants(GridVariant.NO_BORDER);
 
         var nameCol = grid.addColumn(SampleData.Product::name)
                 .setHeader("Name").setWidth("200px").setFlexGrow(2).setResizable(true).setSortable(true);
@@ -73,30 +89,26 @@ public class ProductsView extends VerticalLayout {
                 .setHeader("Price").setAutoWidth(true).setFlexGrow(0).setSortable(true);
         var stockCol = grid.addColumn(SampleData.Product::stock)
                 .setHeader("Stock").setAutoWidth(true).setFlexGrow(0).setSortable(true);
-        var statusCol = grid.addComponentColumn(p -> {
-            Span badge = new Span(p.status());
-            badge.getElement().setAttribute("theme", "badge " + statusBadgeTheme(p.status()));
-            return badge;
-        }).setHeader("Status").setAutoWidth(true).setFlexGrow(0);
+        var statusCol = grid.addComponentColumn(p -> createStatusBadge(p.status()))
+                .setHeader("Status").setAutoWidth(true).setFlexGrow(0);
         var actionsCol = grid.addComponentColumn(product -> {
-            Button edit = new Button(VaadinIcon.EDIT.create());
-            edit.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_SMALL);
-            edit.setAriaLabel("Edit product");
-            edit.addClickListener(e -> openProductDialog(product));
+            Button edit = new Button(Lucide.SQUARE_PEN.create(), e -> openProductDialog(product));
+            edit.addThemeVariants(ButtonVariant.TERTIARY);
+            edit.setAriaLabel("Edit");
+            edit.setTooltipText("Edit");
             return edit;
-        }).setWidth("72px").setFlexGrow(0);
+        }).setAutoWidth(true).setFlexGrow(0);
 
         var dataView = grid.setItems(SampleData.products());
-        grid.setWidthFull();
+        grid.setHeightFull();
 
         // Header row filters
         HeaderRow filterRow = grid.appendHeaderRow();
 
         TextField nameFilter = new TextField();
+        nameFilter.setClearButtonVisible(true);
         nameFilter.setPlaceholder("Filter name...");
         nameFilter.setWidthFull();
-        nameFilter.setClearButtonVisible(true);
-        nameFilter.getStyle().set("--vaadin-text-field-default-width", "auto");
         filterRow.getCell(nameCol).setComponent(nameFilter);
 
         Select<String> categoryFilter = new Select<>();
@@ -111,31 +123,39 @@ public class ProductsView extends VerticalLayout {
         statusFilter.setPlaceholder("All");
         statusFilter.setWidthFull();
         filterRow.getCell(statusCol).setComponent(statusFilter);
+
         filterRow.getCell(priceCol).setText("");
         filterRow.getCell(stockCol).setText("");
         filterRow.getCell(actionsCol).setText("");
 
         Runnable applyFilter = () -> dataView.setFilter(p ->
-            (nameFilter.getValue().isBlank() || p.name().toLowerCase().contains(nameFilter.getValue().toLowerCase())) &&
-            (categoryFilter.getValue() == null || categoryFilter.getValue().isBlank() || categoryFilter.getValue().equals(p.category())) &&
-            (statusFilter.getValue() == null || statusFilter.getValue().isBlank() || statusFilter.getValue().equals(p.status())));
+                (nameFilter.getValue().isBlank() || p.name().toLowerCase().contains(nameFilter.getValue().toLowerCase())) &&
+                        (categoryFilter.getValue() == null || categoryFilter.getValue().isBlank() || categoryFilter.getValue().equals(p.category())) &&
+                        (statusFilter.getValue() == null || statusFilter.getValue().isBlank() || statusFilter.getValue().equals(p.status())));
 
         nameFilter.addValueChangeListener(e -> applyFilter.run());
         categoryFilter.addValueChangeListener(e -> applyFilter.run());
         statusFilter.addValueChangeListener(e -> applyFilter.run());
 
-        addAndExpand(grid);
+        return grid;
     }
 
-    private String statusBadgeTheme(String status) {
-        return switch (status) {
-            case "Active" -> "success";
-            case "Beta" -> "contrast";
-            case "Deprecated" -> "error";
-            default -> "";
-        };
+    /**
+     * Badge indicating the status of a product.
+     */
+    private Badge createStatusBadge(String status) {
+        Badge badge = new Badge(status);
+        switch (status) {
+            case "Active" -> badge.addThemeVariants(BadgeVariant.SUCCESS);
+            case "Beta" -> badge.addThemeVariants(BadgeVariant.CONTRAST);
+            case "Deprecated" -> badge.addThemeVariants(BadgeVariant.ERROR);
+        }
+        return badge;
     }
 
+    /**
+     * Opens a dialog to add a new product or edit an existing one.
+     */
     private void openProductDialog(SampleData.Product product) {
         Dialog dialog = new Dialog();
         dialog.setHeaderTitle(product == null ? "Add Product" : "Edit Product");
@@ -159,8 +179,7 @@ public class ProductsView extends VerticalLayout {
         stock.setStep(1);
         stock.setMin(0);
 
-        Select<String> status = new Select<>();
-        status.setLabel("Status");
+        Select<String> status = new Select<>("Status");
         status.setItems("Active", "Beta", "Deprecated", "Inactive");
         status.setValue(product != null ? product.status() : "Active");
 
@@ -169,17 +188,22 @@ public class ProductsView extends VerticalLayout {
 
         Button save = new Button("Save", e -> {
             dialog.close();
-            Notification n = Notification.show(
-                product == null ? "Product created successfully" : "Product updated successfully",
-                3000, Notification.Position.BOTTOM_END);
-            n.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            notify(product == null ? "Product created successfully" : "Product updated successfully", NotificationVariant.SUCCESS);
         });
-        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        save.addThemeVariants(ButtonVariant.PRIMARY);
 
         Button cancel = new Button("Cancel", e -> dialog.close());
-        cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        cancel.addThemeVariants(ButtonVariant.TERTIARY);
 
         dialog.getFooter().add(cancel, save);
         dialog.open();
+    }
+
+    /**
+     * Shows a toast notification at the bottom-end of the screen.
+     */
+    private void notify(String message, NotificationVariant... variants) {
+        Notification notification = Notification.show(message);
+        notification.addThemeVariants(variants);
     }
 }

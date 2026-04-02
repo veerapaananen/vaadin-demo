@@ -1,140 +1,25 @@
-:root {
-  --aura-base-font-size: 14;
-  --aura-font-size-xxl: calc(var(--aura-font-size-xl) * 1.4);
-  --aura-text-color-tertiary: color-mix(in oklab, var(--vaadin-text-color) 50%, transparent);
-  --aura-success-surface: color-mix(in oklab, var(--aura-green) 15%, transparent);
-  --aura-error-surface: color-mix(in oklab, var(--aura-red) 15%, transparent);
+@import "./avatar.css";
+@import "./aura-view.css";
+@import "./card.css";
+@import "./tailwind.css";
+@config "./tailwind.config.js";
+
+html {
+  --vaadin-user-color: var(--aura-accent-color);
+  height: 100dvh;
 }
 
-/* ─── View header ──────────────────────────────────────────────── */
-.view-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding-bottom: var(--vaadin-gap-s);
-  border-bottom: 1px solid var(--vaadin-border-color);
-}
-
-/* ─── Stat cards (vaadin-card) ──────────────────────────────────── */
-.stat-card {
-  border-left: 3px solid var(--aura-accent-color);
-  min-width: 160px;
-  flex: 1;
-}
-
-.stat-card .stat-value {
-  font-size: var(--aura-font-size-xxl);
-  font-weight: 700;
-  color: var(--vaadin-text-color);
-  line-height: 1.2;
-  display: block;
-}
-
-.stat-card .stat-trend-row {
-  margin-top: var(--vaadin-gap-s);
-}
-
-.stat-card .stat-trend {
-  font-size: var(--aura-font-size-xs);
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: var(--vaadin-radius-s);
-}
-
-.stat-card .stat-trend.up {
-  color: var(--aura-green-text);
-  background: var(--aura-success-surface);
-}
-
-.stat-card .stat-trend.down {
-  color: var(--aura-red-text);
-  background: var(--aura-error-surface);
-}
-
-/* ─── Component gallery ────────────────────────────────────────── */
-.component-gallery {
-  display: flex;
-  flex-direction: column;
-  gap: var(--vaadin-gap-m);
-  width: 100%;
-}
-
-@media (min-width: 600px) {
-  .component-gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  }
-}
-
-/* ─── Chart placeholder ─────────────────────────────────────────── */
-.chart-placeholder {
-  background: var(--vaadin-background-container);
-  border: 1px dashed var(--vaadin-border-color-secondary);
-  border-radius: var(--vaadin-radius-l);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: var(--vaadin-gap-s);
-  color: var(--vaadin-text-color-secondary);
-  font-size: var(--aura-font-size-s);
-  min-height: 280px;
-  flex: 1;
-}
-
-/* ─── Source code viewer ─────────────────────────────────────────── */
-.source-code-pre {
-  background: var(--vaadin-background-container);
-  color: var(--vaadin-text-color);
-  border: 1px solid var(--vaadin-border-color);
-  border-radius: var(--vaadin-radius-m);
-  padding: var(--vaadin-gap-m);
-  overflow: auto;
-  font-family: 'JetBrains Mono', 'Geist Mono', 'Fira Code', monospace;
-  font-size: 13px;
-  line-height: 1.65;
-  white-space: pre;
-  max-height: 60vh;
-  tab-size: 4;
+body {
+  height: 100%;
   margin: 0;
+  transition: none !important;
 }
 
-.source-code-pre code {
-  font-family: inherit;
-  font-size: inherit;
-}
-
-/* ─── Integration cards ──────────────────────────────────────────── */
-.integration-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--vaadin-gap-m);
-  padding: var(--vaadin-gap-m) var(--vaadin-gap-l);
-  background: var(--vaadin-background-container);
-  border: 1px solid var(--vaadin-border-color);
-  border-radius: var(--vaadin-radius-l);
-  width: 100%;
-  box-sizing: border-box;
-  transition: background 0.15s;
-}
-
-.integration-card:hover {
-  background: var(--vaadin-background-container-strong);
-}
-
-.integration-card .integration-info {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.integration-card .integration-actions {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  gap: var(--vaadin-gap-s);
+hr {
+  background: var(--vaadin-border-color-secondary);
+  border: 0;
+  margin: var(--vaadin-gap-m) 0;
+  max-height: 1px;
+  min-height: 1px;
+  place-self: stretch stretch;
 }

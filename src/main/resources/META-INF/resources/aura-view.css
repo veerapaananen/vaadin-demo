@@ -1,0 +1,94 @@
+.aura-view {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  height: calc(100% + var(--safe-area-inset-top) + var(--safe-area-inset-bottom));
+  margin-block: calc(var(--safe-area-inset-top) * -1) calc(var(--safe-area-inset-bottom) * -1);
+  padding-block: var(--safe-area-inset-top) var(--safe-area-inset-bottom);
+}
+
+.aura-view > :not(header, footer, .aura-view-header, .aura-view-footer) {
+  flex: 1;
+}
+
+.aura-view > * {
+  --vaadin-scroller-padding-inline: var(--vaadin-padding-m);
+}
+
+.aura-view:not(:has(header, .aura-view-header)) > vaadin-scroller {
+  padding-top: var(--safe-area-inset-top);
+}
+
+.aura-view:not(:has(footer, .aura-view-footer)) > vaadin-scroller {
+  padding-bottom: var(--safe-area-inset-bottom);
+}
+
+.aura-view > :is(header, footer),
+:is(.aura-view-header, .aura-view-footer) {
+  align-items: center;
+  display: flex;
+  gap: var(--vaadin-gap-xs);
+  padding: var(--vaadin-padding-m);
+}
+
+.aura-view > header,
+.aura-view-header,
+.aura-view[slot='navbar'] > footer,
+.aura-view-footer[slot='navbar'] {
+  padding-top: max(var(--vaadin-padding-m), var(--safe-area-inset-top));
+}
+
+.aura-view[slot='navbar'] > :is(header, footer),
+:is(.aura-view-header, .aura-view-footer)[slot='navbar'],
+.aura-view[slot='drawer'] > header,
+.aura-view-header[slot='drawer'] {
+  margin-top: calc(var(--safe-area-inset-top) * -1);
+}
+
+.aura-view[slot='navbar'] > :is(header, footer),
+:is(.aura-view-header, .aura-view-footer)[slot='navbar'] {
+  padding: var(--safe-area-inset-top) 0 0 0;
+}
+
+.aura-view[slot='navbar'] > footer,
+.aura-view-footer[slot='navbar'] {
+  margin-inline-start: auto;
+}
+
+.aura-view:not([slot='navbar']) > footer,
+.aura-view-footer:not([slot='navbar']) {
+  padding-bottom: max(var(--vaadin-padding-m), var(--safe-area-inset-bottom));
+}
+
+.aura-view[slot='drawer'] > footer,
+.aura-view-footer[slot='drawer'] {
+  margin-bottom: calc(var(--safe-area-inset-bottom) * -1);
+}
+
+:is(.aura-view > header, .aura-view-header) :is(h1, h2, h3, h4, h5, h6, .aura-view-heading) {
+  color: var(--vaadin-text-color);
+  flex: 1;
+  font-size: var(--aura-font-size-l);
+  font-weight: var(--aura-font-weight-semibold);
+  line-height: var(--aura-line-height-m);
+  margin: 0;
+  padding-block: round(var(--vaadin-padding-s) / 1.4 + var(--vaadin-button-border-width, 1px), 1px);
+
+  &:first-child {
+    padding-inline-start: var(--vaadin-padding-s);
+  }
+
+  &:last-child {
+    padding-inline-end: var(--vaadin-padding-s);
+  }
+}
+
+vaadin-app-layout:is([drawer-opened]:not([overlay]), :has(> [slot='navbar'] vaadin-drawer-toggle)) :is(.aura-view > header, .aura-view-header) vaadin-drawer-toggle:not([theme~='permanent']),
+vaadin-master-detail-layout:not([drawer], [stack]) [slot='detail'].aura-view > header mdl-back-button,
+vaadin-master-detail-layout:not([drawer], [stack]) [slot='detail'] .aura-view > header mdl-back-button {
+  display: none;
+
+  & + :is(h1, h2, h3, h4, h5, h6, .aura-view-heading) {
+    padding-inline-start: var(--vaadin-padding-s);
+  }
+}

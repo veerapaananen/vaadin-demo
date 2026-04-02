@@ -7,12 +7,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.H4;
-import com.vaadin.flow.component.html.Hr;
-import com.vaadin.flow.component.html.Paragraph;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -104,12 +99,12 @@ public class SettingsView extends VerticalLayout {
     private VerticalLayout buildNotificationsTab() {
         FormLayout form = new FormLayout();
         form.add(
-            new Checkbox("Email me on new orders", true),
-            new Checkbox("Email me on failed payments", true),
-            new Checkbox("Weekly usage digest", true),
-            new Checkbox("Security alerts", true),
-            new Checkbox("Product updates and announcements", false),
-            new Checkbox("Marketing emails", false)
+                new Checkbox("Email me on new orders", true),
+                new Checkbox("Email me on failed payments", true),
+                new Checkbox("Weekly usage digest", true),
+                new Checkbox("Security alerts", true),
+                new Checkbox("Product updates and announcements", false),
+                new Checkbox("Marketing emails", false)
         );
 
         Button save = new Button("Save Preferences");

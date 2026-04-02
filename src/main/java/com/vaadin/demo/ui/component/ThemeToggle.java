@@ -24,39 +24,39 @@ public class ThemeToggle extends Button {
 
         addClickListener(e -> {
             UI.getCurrent().getPage().executeJs(
-                "const isDark = document.documentElement.getAttribute('theme')==='dark';" +
-                "if(isDark){" +
-                "  document.documentElement.removeAttribute('theme');" +
-                "  document.documentElement.style.removeProperty('color-scheme');" +
-                "  localStorage.setItem('aura:theme-scheme','light');" +
-                "  return false;" +
-                "} else {" +
-                "  document.documentElement.setAttribute('theme','dark');" +
-                "  document.documentElement.style.setProperty('color-scheme','dark');" +
-                "  localStorage.setItem('aura:theme-scheme','dark');" +
-                "  return true;" +
-                "}")
-            .then(Boolean.class, dark -> {
-                sunIcon.setVisible(dark);
-                moonIcon.setVisible(!dark);
-            });
+                            "const isDark = document.documentElement.getAttribute('theme')==='dark';" +
+                                    "if(isDark){" +
+                                    "  document.documentElement.removeAttribute('theme');" +
+                                    "  document.documentElement.style.removeProperty('color-scheme');" +
+                                    "  localStorage.setItem('aura:theme-scheme','light');" +
+                                    "  return false;" +
+                                    "} else {" +
+                                    "  document.documentElement.setAttribute('theme','dark');" +
+                                    "  document.documentElement.style.setProperty('color-scheme','dark');" +
+                                    "  localStorage.setItem('aura:theme-scheme','dark');" +
+                                    "  return true;" +
+                                    "}")
+                    .then(Boolean.class, dark -> {
+                        sunIcon.setVisible(dark);
+                        moonIcon.setVisible(!dark);
+                    });
         });
 
         // Restore saved preference and sync icon state on attach
         addAttachListener(event -> UI.getCurrent().getPage().executeJs(
-            "const scheme = localStorage.getItem('aura:theme-scheme');" +
-            "if(scheme === 'light') {" +
-            "  document.documentElement.removeAttribute('theme');" +
-            "  document.documentElement.style.removeProperty('color-scheme');" +
-            "  return false;" +
-            "} else {" +
-            "  document.documentElement.setAttribute('theme','dark');" +
-            "  document.documentElement.style.setProperty('color-scheme','dark');" +
-            "  return true;" +
-            "}")
-            .then(Boolean.class, dark -> {
-                sunIcon.setVisible(dark);
-                moonIcon.setVisible(!dark);
-            }));
+                        "const scheme = localStorage.getItem('aura:theme-scheme');" +
+                                "if(scheme === 'light') {" +
+                                "  document.documentElement.removeAttribute('theme');" +
+                                "  document.documentElement.style.removeProperty('color-scheme');" +
+                                "  return false;" +
+                                "} else {" +
+                                "  document.documentElement.setAttribute('theme','dark');" +
+                                "  document.documentElement.style.setProperty('color-scheme','dark');" +
+                                "  return true;" +
+                                "}")
+                .then(Boolean.class, dark -> {
+                    sunIcon.setVisible(dark);
+                    moonIcon.setVisible(!dark);
+                }));
     }
 }

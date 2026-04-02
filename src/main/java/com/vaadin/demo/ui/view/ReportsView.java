@@ -46,7 +46,7 @@ public class ReportsView extends VerticalLayout {
         // Coming soon message
         Paragraph comingSoon = new Paragraph(
                 "This view demonstrates placeholder layout patterns for embedding " +
-                "Vaadin Charts and analytics dashboards.");
+                        "Vaadin Charts and analytics dashboards.");
         comingSoon.getStyle()
                 .set("color", "var(--vaadin-text-color-secondary)")
                 .set("margin", "0")
@@ -61,8 +61,8 @@ public class ReportsView extends VerticalLayout {
         chartsRow.setWidthFull();
 
         chartsRow.add(
-            chartPlaceholder("Revenue Over Time", "Line chart — monthly revenue for the last 12 months"),
-            chartPlaceholder("Orders by Category", "Pie chart — distribution of orders across product categories")
+                chartPlaceholder("Revenue Over Time", "Line chart — monthly revenue for the last 12 months"),
+                chartPlaceholder("Orders by Category", "Pie chart — distribution of orders across product categories")
         );
 
         addAndExpand(chartsRow);

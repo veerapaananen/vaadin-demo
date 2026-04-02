@@ -1,0 +1,217 @@
+package com.vaadin.demo.ui.util;
+
+public final class Tailwind {
+
+    private Tailwind() {
+    }
+
+    public static final class AlignContent {
+        public static final String CENTER = "content-center";
+
+        private AlignContent() {
+        }
+    }
+
+    public static final class AlignItems {
+        public static final String CENTER = "items-center";
+
+        private AlignItems() {
+        }
+    }
+
+    public static final class Display {
+        public static final String FLEX = "flex";
+        public static final String GRID = "grid";
+
+        private Display() {
+        }
+    }
+
+    public static final class Flex {
+        public static final String GROW = "grow";
+
+        private Flex() {
+        }
+    }
+
+    public static final class FlexDirection {
+        public static final String COLUMN = "flex-col";
+
+        private FlexDirection() {
+        }
+    }
+
+    public static final class FlexWrap {
+        public static final String WRAP = "flex-wrap";
+
+        private FlexWrap() {
+        }
+    }
+
+    public static final class FontSize {
+        public static final String XSMALL = "text-xs";
+        public static final String SMALL = "text-s";
+        public static final String MEDIUM = "text-m";
+        public static final String LARGE = "text-l";
+        public static final String XLARGE = "text-xl";
+
+        private FontSize() {
+        }
+    }
+
+    public static final class LineHeight {
+        public static final String XSMALL = "leading-xs";
+        public static final String SMALL = "leading-s";
+        public static final String MEDIUM = "leading-m";
+        public static final String LARGE = "leading-l";
+        public static final String XLARGE = "leading-xl";
+
+        private LineHeight() {
+        }
+    }
+
+    public static final class FontWeight {
+        public static final String MEDIUM   = "font-medium";
+        public static final String SEMIBOLD = "font-semibold";
+
+        private FontWeight() {
+        }
+    }
+
+    public static final class Height {
+        public static final String FULL = "h-full";
+
+        private Height() {
+        }
+    }
+
+    public static final class Gap {
+        public static final String XSMALL = "gap-xs";
+        public static final String SMALL = "gap-s";
+        public static final String MEDIUM = "gap-m";
+        public static final String LARGE = "gap-l";
+        public static final String XLARGE = "gap-xl";
+
+        private Gap() {
+        }
+
+        public static final class Column {
+            public static final String XSMALL = "gap-x-xs";
+            public static final String SMALL = "gap-x-s";
+            public static final String MEDIUM = "gap-x-m";
+            public static final String LARGE = "gap-x-l";
+            public static final String XLARGE = "gap-x-xl";
+
+            private Column() {
+            }
+        }
+
+        public static final class Row {
+            public static final String XSMALL = "gap-y-xs";
+            public static final String SMALL = "gap-y-s";
+            public static final String MEDIUM = "gap-y-m";
+            public static final String LARGE = "gap-y-l";
+            public static final String XLARGE = "gap-y-xl";
+
+            private Row() {
+            }
+        }
+    }
+
+    public static final class Grid {
+        public static final String AUTO_ROWS_MIN_200 = "auto-rows-[minmax(200px,auto)]";
+        public static final String COLUMNS_3_AUTO = "grid-cols-[repeat(3,auto)]";
+        public static final String COLUMNS_AUTO_FIT_MIN_200 = "grid-cols-[repeat(auto-fit,minmax(200px,1fr))]";
+        public static final String FLOW_DENSE = "grid-flow-dense";
+
+        private Grid() {
+        }
+    }
+
+    public static final class JustifyContent {
+        public static final String CENTER = "justify-center";
+
+        private JustifyContent() {
+        }
+    }
+
+    public static final class GridColumn {
+        public static final String SPAN_2 = "col-span-2";
+        public static final String SPAN_3 = "col-span-3";
+
+        private GridColumn() {
+        }
+    }
+
+    public static final class GridRow {
+        public static final String SPAN_2 = "row-span-2";
+
+        private GridRow() {
+        }
+    }
+
+    public static final class Margin {
+        private Margin() {
+        }
+
+        public static final class Start {
+            public static final String SMALL = "ms-s";
+
+            private Start() {
+            }
+        }
+
+        public static final class Top {
+            public static final String XSMALL = "mt-xs";
+
+            private Top() {
+            }
+        }
+    }
+
+    public static final class MinHeight {
+        public static final String ZERO = "min-h-0";
+
+        private MinHeight() {
+        }
+    }
+
+    public static final class Overflow {
+        public static final String HIDDEN = "overflow-hidden";
+
+        private Overflow() {
+        }
+    }
+
+    public static final class Padding {
+        private Padding() {
+        }
+
+        public static final class Bottom {
+            public static final String XSMALL = "pb-xs";
+            public static final String LARGE = "pb-l";
+
+            private Bottom() {
+            }
+        }
+
+        public static final class Horizontal {
+            public static final String LARGE = "px-l";
+            public static final String XSMALL = "px-xs";
+
+            private Horizontal() {
+            }
+        }
+
+        public static final class Top {
+            public static final String NONE = "pt-0";
+
+            private Top() {
+            }
+        }
+    }
+
+    public static final class Width {
+        public static final String FULL = "w-full";
+    }
+}

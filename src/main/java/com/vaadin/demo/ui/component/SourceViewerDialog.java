@@ -36,7 +36,7 @@ public class SourceViewerDialog extends Dialog {
         Div codeBlock = new Div();
         codeBlock.getElement().setProperty("innerHTML",
                 "<pre class=\"source-code-pre language-java\"><code class=\"language-java\">"
-                + escapedSource + "</code></pre>");
+                        + escapedSource + "</code></pre>");
         codeBlock.getStyle()
                 .set("overflow", "auto")
                 .set("flex", "1")
@@ -52,16 +52,13 @@ public class SourceViewerDialog extends Dialog {
         addOpenedChangeListener(e -> {
             if (e.isOpened()) {
                 UI.getCurrent().getPage().executeJs(
-                    "setTimeout(() => { if(window.Prism) Prism.highlightAll(); }, 50);");
+                        "setTimeout(() => { if(window.Prism) Prism.highlightAll(); }, 50);");
             }
         });
 
         // Footer: GitHub link with icon
-        Button githubBtn = new Button("View on GitHub", VaadinIcon.EXTERNAL_LINK.create());
-        githubBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_SMALL);
-        githubBtn.addClickListener(e ->
-                UI.getCurrent().getPage().executeJs("window.open($0,'_blank')", githubUrl));
-
-        getFooter().add(githubBtn);
+        Button gitHub = new Button("View on GitHub", VaadinIcon.EXTERNAL_LINK.create(), e -> UI.getCurrent().getPage().executeJs("window.open($0,'_blank')", githubUrl));
+        gitHub.addThemeVariants(ButtonVariant.PRIMARY);
+        getFooter().add(gitHub);
     }
 }

@@ -3,17 +3,25 @@ package com.vaadin.demo.ui.view;
 import com.vaadin.demo.data.SampleData;
 import com.vaadin.demo.service.SourceService;
 import com.vaadin.demo.ui.component.SourceViewerDialog;
+import com.vaadin.demo.ui.component.View;
+import com.vaadin.demo.ui.component.ViewHeader;
+import com.vaadin.demo.ui.util.Lucide;
+import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
+import com.vaadin.flow.component.badge.Badge;
+import com.vaadin.flow.component.badge.BadgeVariant;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.card.Card;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
-import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -23,125 +31,152 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
+import static com.vaadin.demo.ui.util.Tailwind.*;
+
 @Route("users")
 @PageTitle("Users — Vaadin Demo")
-public class UsersView extends VerticalLayout {
+public class UsersView extends View {
 
     public UsersView(SourceService sourceService) {
-        setSizeFull();
-        setPadding(true);
-        setSpacing(false);
-        getStyle().set("gap", "var(--vaadin-gap-m)");
+        add(createHeader(sourceService));
 
-        // Header
-        HorizontalLayout header = new HorizontalLayout();
-        header.addClassName("view-header");
-        header.setWidthFull();
-        header.setJustifyContentMode(JustifyContentMode.BETWEEN);
-        header.setAlignItems(Alignment.CENTER);
+        Div content = new Div(createUsersCard());
+        content.addClassNames(Display.FLEX, Overflow.HIDDEN, Padding.Bottom.LARGE, Padding.Horizontal.LARGE);
+        add(content);
+    }
 
-        H2 title = new H2("Users");
-        title.getStyle().set("margin", "0");
+    /**
+     * Page header with drawer toggle, title, invite user button, and source viewer button.
+     */
+    private ViewHeader createHeader(SourceService sourceService) {
+        DrawerToggle toggle = new DrawerToggle();
+        toggle.addThemeVariants(ButtonVariant.TERTIARY);
 
-        HorizontalLayout headerActions = new HorizontalLayout();
-        headerActions.setSpacing(false);
-        headerActions.getStyle().set("gap", "var(--vaadin-gap-s)");
+        H1 title = new H1("Users");
 
-        Button inviteUser = new Button("Invite User", VaadinIcon.ENVELOPE.create());
-        inviteUser.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        inviteUser.addClickListener(e -> {
-            Notification n = Notification.show("Invitation sent — feature not yet implemented in this demo", 3000, Notification.Position.BOTTOM_END);
-            n.addThemeVariants(NotificationVariant.LUMO_PRIMARY);
-        });
+        Button inviteUser = new Button("Invite User", Lucide.MAIL_PLUS.create());
+        inviteUser.addThemeVariants(ButtonVariant.PRIMARY);
+        inviteUser.addClickListener(e -> notify("Invitation sent — feature not yet implemented in this demo", NotificationVariant.LUMO_PRIMARY));
 
-        Button viewSource = new Button(VaadinIcon.CODE.create());
-        viewSource.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON);
+        Button viewSource = new Button(Lucide.CODE.create(), e -> new SourceViewerDialog(UsersView.class, sourceService).open());
+        viewSource.addThemeVariants(ButtonVariant.TERTIARY);
         viewSource.setAriaLabel("View source");
-        viewSource.addClickListener(e -> new SourceViewerDialog(UsersView.class, sourceService).open());
+        viewSource.setTooltipText("View source");
 
-        headerActions.add(inviteUser, viewSource);
-        header.add(title, headerActions);
-        add(header);
+        return new ViewHeader(toggle, title, inviteUser, viewSource);
+    }
 
-        // Grid
+    /**
+     * Card containing the users grid.
+     */
+    private Card createUsersCard() {
+        Card card = new Card();
+        card.add(createUsersGrid());
+        card.addClassNames(Width.FULL);
+        return card;
+    }
+
+    /**
+     * Grid listing users with name, email, role, last login, and actions columns.
+     */
+    private Grid<SampleData.User> createUsersGrid() {
         Grid<SampleData.User> grid = new Grid<>(SampleData.User.class, false);
-        grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES, GridVariant.LUMO_NO_BORDER);
+        grid.addThemeVariants(GridVariant.NO_BORDER);
+        grid.setHeightFull();
 
         var nameCol = grid.addComponentColumn(user -> {
             Avatar avatar = new Avatar(user.name());
             avatar.setAbbreviation(user.initials());
             avatar.getStyle().set("--vaadin-avatar-size", "2rem");
-            Span name = new Span(user.name());
-            name.getStyle().set("font-weight", "500");
-            HorizontalLayout cell = new HorizontalLayout(avatar, name);
-            cell.setAlignItems(Alignment.CENTER);
-            cell.setSpacing(false);
-            cell.getStyle().set("gap", "var(--vaadin-gap-s)");
-            return cell;
-        }).setHeader("Name").setWidth("200px").setFlexGrow(1).setResizable(true)
-          .setComparator(u -> u.name());
+
+            Div div = new Div(avatar, new Text(user.name()));
+            div.addClassNames(AlignItems.CENTER, Display.FLEX, FontWeight.MEDIUM, Gap.SMALL);
+            return div;
+        }).setComparator(u -> u.name())
+                .setHeader("Name")
+                .setResizable(true);
 
         var emailCol = grid.addColumn(SampleData.User::email)
-                .setHeader("Email").setWidth("220px").setFlexGrow(1).setResizable(true).setSortable(true);
+                .setHeader("Email")
+                .setResizable(true)
+                .setSortable(true);
 
-        var roleCol = grid.addComponentColumn(user -> {
-            Span badge = new Span(user.role());
-            badge.getElement().setAttribute("theme", "badge " + roleBadgeTheme(user.role()));
-            return badge;
-        }).setHeader("Role").setAutoWidth(true).setFlexGrow(0)
-          .setComparator(u -> u.role());
+        var roleCol = grid.addComponentColumn(user -> createRoleBadge(user.role()))
+                .setAutoWidth(true)
+                .setComparator(u -> u.role())
+                .setFlexGrow(0)
+                .setHeader("Role");
 
         var lastLoginCol = grid.addColumn(SampleData.User::lastLogin)
-                .setHeader("Last Login").setAutoWidth(true).setFlexGrow(0).setSortable(true);
+                .setAutoWidth(true)
+                .setFlexGrow(0)
+                .setHeader("Last Login")
+                .setSortable(true);
 
         var actionsCol = grid.addComponentColumn(user -> {
-            Button edit = new Button(VaadinIcon.EDIT.create());
-            edit.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_SMALL);
-            edit.setAriaLabel("Edit user");
-            edit.addClickListener(e -> openUserDialog(user));
+            Button edit = new Button(Lucide.SQUARE_PEN.create(), e -> openUserDialog(user));
+            edit.addThemeVariants(ButtonVariant.TERTIARY);
+            edit.setAriaLabel("Edit");
+            edit.setTooltipText("Edit");
             return edit;
-        }).setWidth("72px").setFlexGrow(0);
+        })
+                .setAutoWidth(true)
+                .setFlexGrow(0);
 
         var dataView = grid.setItems(SampleData.users());
-        grid.setWidthFull();
 
         // Header row filters
         HeaderRow filterRow = grid.appendHeaderRow();
 
         TextField nameFilter = new TextField();
+        nameFilter.setClearButtonVisible(true);
         nameFilter.setPlaceholder("Filter name...");
         nameFilter.setWidthFull();
-        nameFilter.setClearButtonVisible(true);
-        nameFilter.getStyle().set("--vaadin-text-field-default-width", "auto");
         filterRow.getCell(nameCol).setComponent(nameFilter);
 
         TextField emailFilter = new TextField();
+        emailFilter.setClearButtonVisible(true);
         emailFilter.setPlaceholder("Filter email...");
         emailFilter.setWidthFull();
-        emailFilter.setClearButtonVisible(true);
-        emailFilter.getStyle().set("--vaadin-text-field-default-width", "auto");
         filterRow.getCell(emailCol).setComponent(emailFilter);
 
         Select<String> roleFilter = new Select<>();
-        roleFilter.setItems("", "Admin", "Developer", "Viewer", "Billing");
+        roleFilter.setItems("", "Admin", "Billing", "Developer", "Viewer");
         roleFilter.setPlaceholder("All roles");
         roleFilter.setWidthFull();
         filterRow.getCell(roleCol).setComponent(roleFilter);
+
         filterRow.getCell(lastLoginCol).setText("");
         filterRow.getCell(actionsCol).setText("");
 
         Runnable applyFilter = () -> dataView.setFilter(u ->
-            (nameFilter.getValue().isBlank() || u.name().toLowerCase().contains(nameFilter.getValue().toLowerCase())) &&
-            (emailFilter.getValue().isBlank() || u.email().toLowerCase().contains(emailFilter.getValue().toLowerCase())) &&
-            (roleFilter.getValue() == null || roleFilter.getValue().isBlank() || roleFilter.getValue().equals(u.role())));
+                (nameFilter.getValue().isBlank() || u.name().toLowerCase().contains(nameFilter.getValue().toLowerCase())) &&
+                (emailFilter.getValue().isBlank() || u.email().toLowerCase().contains(emailFilter.getValue().toLowerCase())) &&
+                (roleFilter.getValue() == null || roleFilter.getValue().isBlank() || roleFilter.getValue().equals(u.role())));
 
         nameFilter.addValueChangeListener(e -> applyFilter.run());
         emailFilter.addValueChangeListener(e -> applyFilter.run());
         roleFilter.addValueChangeListener(e -> applyFilter.run());
 
-        addAndExpand(grid);
+        return grid;
     }
 
+    /**
+     * Badge indicating the role of a user.
+     */
+    private Badge createRoleBadge(String role) {
+        Badge badge = new Badge(role);
+        switch (role) {
+            case "Admin"     -> badge.addThemeVariants(BadgeVariant.ERROR);
+            case "Billing"   -> badge.addThemeVariants(BadgeVariant.CONTRAST);
+            case "Developer" -> badge.addThemeVariants(BadgeVariant.SUCCESS);
+        }
+        return badge;
+    }
+
+    /**
+     * Opens a dialog to edit an existing user's role.
+     */
     private void openUserDialog(SampleData.User user) {
         Dialog dialog = new Dialog();
         dialog.setHeaderTitle("Edit User");
@@ -165,7 +200,7 @@ public class UsersView extends VerticalLayout {
         userInfo.getStyle().set("gap", "2px");
 
         HorizontalLayout avatarRow = new HorizontalLayout(avatar, userInfo);
-        avatarRow.setAlignItems(Alignment.CENTER);
+        avatarRow.setAlignItems(HorizontalLayout.Alignment.CENTER);
         avatarRow.setWidthFull();
         avatarRow.getStyle()
                 .set("padding-bottom", "var(--vaadin-gap-m)")
@@ -173,7 +208,7 @@ public class UsersView extends VerticalLayout {
 
         Select<String> role = new Select<>();
         role.setLabel("Role");
-        role.setItems("Admin", "Developer", "Viewer", "Billing");
+        role.setItems("Admin", "Billing", "Developer", "Viewer");
         role.setValue(user.role());
         role.setWidthFull();
 
@@ -190,26 +225,22 @@ public class UsersView extends VerticalLayout {
 
         Button save = new Button("Save Changes", e -> {
             dialog.close();
-            Notification n = Notification.show(
-                    user.name() + "'s role updated to " + role.getValue(),
-                    3000, Notification.Position.BOTTOM_END);
-            n.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            notify(user.name() + "'s role updated to " + role.getValue(), NotificationVariant.SUCCESS);
         });
-        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        save.addThemeVariants(ButtonVariant.PRIMARY);
 
         Button cancel = new Button("Cancel", e -> dialog.close());
-        cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        cancel.addThemeVariants(ButtonVariant.TERTIARY);
 
         dialog.getFooter().add(cancel, save);
         dialog.open();
     }
 
-    private String roleBadgeTheme(String role) {
-        return switch (role) {
-            case "Admin"     -> "error";
-            case "Developer" -> "success";
-            case "Billing"   -> "contrast";
-            default          -> "";
-        };
+    /**
+     * Shows a toast notification at the bottom-end of the screen.
+     */
+    private void notify(String message, NotificationVariant... variants) {
+        Notification notification = Notification.show(message);
+        notification.addThemeVariants(variants);
     }
 }

@@ -1,143 +1,98 @@
 package com.vaadin.demo.ui;
 
-import com.vaadin.demo.ui.component.ThemeToggle;
-import com.vaadin.demo.ui.view.ComponentsView;
-import com.vaadin.demo.ui.view.DashboardView;
-import com.vaadin.demo.ui.view.ProductsView;
-import com.vaadin.demo.ui.view.ReportsView;
-import com.vaadin.demo.ui.view.SettingsView;
-import com.vaadin.demo.ui.view.UsersView;
+import com.vaadin.demo.ui.component.ViewFooter;
+import com.vaadin.demo.ui.component.ViewHeader;
+import com.vaadin.demo.ui.component.ViewHeading;
+import com.vaadin.demo.ui.util.Lucide;
+import com.vaadin.demo.ui.util.Theme;
+import com.vaadin.demo.ui.view.*;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
-import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.avatar.AvatarVariant;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.html.Hr;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.NotificationVariant;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
-import com.vaadin.flow.router.AfterNavigationEvent;
-import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.Layout;
-import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 @Layout
 @AnonymousAllowed
-public class MainLayout extends AppLayout implements AfterNavigationObserver {
-
-    private final Span navbarTitle = new Span("Dashboard");
+public class MainLayout extends AppLayout {
 
     public MainLayout() {
         setPrimarySection(Section.DRAWER);
-        addDrawerContent();
-        addNavbarContent();
+        initDrawer();
     }
 
-    @Override
-    public void afterNavigation(AfterNavigationEvent event) {
-        if (getContent() != null) {
-            PageTitle annotation = getContent().getClass().getAnnotation(PageTitle.class);
-            if (annotation != null) {
-                String title = annotation.value();
-                int dash = title.indexOf(" \u2014");
-                navbarTitle.setText(dash > 0 ? title.substring(0, dash) : title);
-            }
-        }
-    }
+    private void initDrawer() {
+        // Header
+        Avatar appLogo = new Avatar();
+        appLogo.addThemeNames(Theme.AVATAR_VAADIN, Theme.AVATAR_SQUARE);
+        appLogo.addThemeVariants(AvatarVariant.AURA_FILLED);
+        appLogo.getStyle()
+                .set("--vaadin-avatar-size", "1.25lh")
+                .set("margin-inline", "calc(var(--vaadin-padding-inline-container) - var(--vaadin-side-nav-item-border-width) - (var(--vaadin-avatar-size) - var(--vaadin-icon-size, 1lh)) / 2)");
 
-    private void addNavbarContent() {
+        ViewHeading appName = new ViewHeading("Vaadin Demo");
+
         DrawerToggle toggle = new DrawerToggle();
-        toggle.setAriaLabel("Menu");
+        toggle.addThemeNames(Theme.DRAWER_TOGGLE_PERMANENT);
+        toggle.addThemeVariants(ButtonVariant.TERTIARY);
 
-        navbarTitle.getStyle()
-                .set("font-weight", "600")
-                .set("font-size", "var(--aura-font-size-m)");
-
-        addToNavbar(true, toggle, navbarTitle);
-    }
-
-    private void addDrawerContent() {
-        // Header: logo + app name
-        HorizontalLayout drawerHeader = new HorizontalLayout();
-        drawerHeader.setAlignItems(FlexComponent.Alignment.CENTER);
-        drawerHeader.getStyle()
-                .set("padding", "var(--vaadin-gap-xl)")
-                .set("gap", "var(--vaadin-gap-m)");
-
-        var logoIcon = VaadinIcon.VAADIN_H.create();
-        logoIcon.getStyle()
-                .set("color", "var(--aura-accent-color)")
-                .set("width", "1.5rem")
-                .set("height", "1.5rem");
-
-        Span appTitle = new Span("Vaadin Demo");
-        appTitle.getStyle()
-                .set("font-weight", "600")
-                .set("font-size", "var(--aura-font-size-m)");
-
-        drawerHeader.add(logoIcon, appTitle);
+        ViewHeader header = new ViewHeader(appLogo, appName, toggle);
 
         // Navigation
-        SideNav dashboardNav = new SideNav();
-        dashboardNav.addItem(new SideNavItem("Dashboard", DashboardView.class, VaadinIcon.HOME.create()));
-        dashboardNav.addItem(new SideNavItem("Components", ComponentsView.class, VaadinIcon.PUZZLE_PIECE.create()));
+        SideNav nav = new SideNav();
+        nav.addItem(new SideNavItem("Dashboard", DashboardView.class, Lucide.HOUSE.create()));
+        nav.addItem(new SideNavItem("Components", ComponentsView.class, Lucide.COMPONENT.create()));
 
-        SideNav mainNav = new SideNav("Workspace");
-        mainNav.setCollapsible(true);
-        mainNav.addItem(new SideNavItem("Products", ProductsView.class, VaadinIcon.PACKAGE.create()));
-        mainNav.addItem(new SideNavItem("Users", UsersView.class, VaadinIcon.USERS.create()));
-        mainNav.addItem(new SideNavItem("Reports", ReportsView.class, VaadinIcon.BAR_CHART.create()));
+        SideNav workspaceNav = new SideNav("Workspace");
+        workspaceNav.addItem(new SideNavItem("Products", ProductsView.class, Lucide.BARCODE.create()));
+        workspaceNav.addItem(new SideNavItem("Users", UsersView.class, Lucide.USERS.create()));
+        workspaceNav.addItem(new SideNavItem("Reports", ReportsView.class, Lucide.FILE_CHART_COLUMN_INCREASING.create()));
+        workspaceNav.setCollapsible(true);
 
         SideNav growthNav = new SideNav("Growth");
+        growthNav.addItem(placeholderItem("Analytics", Lucide.CHART_PIE));
+        growthNav.addItem(placeholderItem("Revenue", Lucide.PIGGY_BANK));
+        growthNav.addItem(placeholderItem("Engagement", Lucide.ACTIVITY));
+        growthNav.addItem(placeholderItem("Billing", Lucide.CREDIT_CARD));
         growthNav.setCollapsible(true);
-        growthNav.addItem(placeholderItem("Analytics", VaadinIcon.CHART));
-        growthNav.addItem(placeholderItem("Revenue", VaadinIcon.MONEY));
-        growthNav.addItem(placeholderItem("Engagement", VaadinIcon.CHART_LINE));
-        growthNav.addItem(placeholderItem("Billing", VaadinIcon.CREDIT_CARD));
 
         SideNav adminNav = new SideNav("Admin");
+        adminNav.addItem(new SideNavItem("Settings", SettingsView.class, Lucide.SETTINGS.create()));
         adminNav.setCollapsible(true);
-        adminNav.addItem(new SideNavItem("Settings", SettingsView.class, VaadinIcon.COG.create()));
 
-        Scroller scroller = new Scroller(new VerticalLayout(dashboardNav, mainNav, growthNav, adminNav));
-        scroller.setScrollDirection(Scroller.ScrollDirection.VERTICAL);
-        scroller.getStyle().set("flex", "1");
+        Scroller scroller = new Scroller();
+        scroller.getElement().appendChild(nav.getElement(), new Hr().getElement(), workspaceNav.getElement(), new Hr().getElement(), growthNav.getElement(), new Hr().getElement(), adminNav.getElement());
 
-        // Footer: user avatar + name
-        Avatar userAvatar = new Avatar("John Smith");
-        userAvatar.setAbbreviation("JS");
-        userAvatar.getStyle().set("--vaadin-avatar-size", "2rem");
+        // Footer
+        Avatar avatar = new Avatar("John Smith");
+        avatar.addThemeVariants(AvatarVariant.AURA_FILLED);
+        avatar.getStyle().set("--vaadin-avatar-size", "1.25lh");
+        avatar.setAbbreviation("J");
 
-        Span userName = new Span("John Smith");
-        userName.getStyle()
-                .set("font-size", "var(--aura-font-size-s)")
-                .set("flex", "1");
+        Button button = new Button("John Smith");
+        button.addThemeVariants(ButtonVariant.TERTIARY);
+        button.setPrefixComponent(avatar);
 
-        ThemeToggle themeToggle = new ThemeToggle();
+        ViewFooter footer = new ViewFooter(button);
 
-        HorizontalLayout drawerFooter = new HorizontalLayout(userAvatar, userName, themeToggle);
-        drawerFooter.setAlignItems(FlexComponent.Alignment.CENTER);
-        drawerFooter.setWidthFull();
-        drawerFooter.getStyle()
-                .set("padding", "var(--vaadin-gap-m)")
-                .set("border-top", "1px solid var(--vaadin-border-color)")
-                .set("gap", "var(--vaadin-gap-s)");
-
-        addToDrawer(drawerHeader, scroller, drawerFooter);
+        // Add it all together
+        addToDrawer(header, scroller, footer);
     }
 
-    private SideNavItem placeholderItem(String label, VaadinIcon icon) {
+    private SideNavItem placeholderItem(String label, Lucide icon) {
         SideNavItem item = new SideNavItem(label);
         item.setPrefixComponent(icon.create());
-        item.getElement().addEventListener("click", e -> {
-            Notification n = Notification.show(label + " — not yet implemented", 2500, Notification.Position.MIDDLE);
-            n.addThemeVariants(NotificationVariant.LUMO_PRIMARY);
-        });
+        item.getElement().addEventListener("click",
+                e -> Notification.show(label + " not yet implemented")
+        );
         return item;
     }
 }

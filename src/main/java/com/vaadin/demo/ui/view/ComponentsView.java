@@ -2,470 +2,617 @@ package com.vaadin.demo.ui.view;
 
 import com.vaadin.demo.service.SourceService;
 import com.vaadin.demo.ui.component.SourceViewerDialog;
+import com.vaadin.demo.ui.component.View;
+import com.vaadin.demo.ui.component.ViewHeader;
+import com.vaadin.demo.ui.util.Aura;
+import com.vaadin.demo.ui.util.Lucide;
+import com.vaadin.demo.ui.util.Tailwind;
+import com.vaadin.demo.ui.util.Tailwind.*;
+import com.vaadin.demo.ui.util.Theme;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.avatar.Avatar;
+import com.vaadin.flow.component.avatar.AvatarGroup;
+import com.vaadin.flow.component.avatar.AvatarGroup.AvatarGroupItem;
+import com.vaadin.flow.component.badge.Badge;
+import com.vaadin.flow.component.badge.BadgeVariant;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
-import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.card.Card;
+import com.vaadin.flow.component.card.CardVariant;
+import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.combobox.MultiSelectComboBox;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
+import com.vaadin.flow.component.contextmenu.MenuItem;
+import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.html.H4;
-import com.vaadin.flow.component.html.H5;
-import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
+import com.vaadin.flow.component.messages.MessageInput;
+import com.vaadin.flow.component.messages.MessageList;
+import com.vaadin.flow.component.messages.MessageListItem;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.NotificationVariant;
-import com.vaadin.flow.component.orderedlayout.FlexLayout;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.orderedlayout.Scroller;
+import com.vaadin.flow.component.orderedlayout.ScrollerVariant;
 import com.vaadin.flow.component.progressbar.ProgressBar;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.sidenav.SideNav;
+import com.vaadin.flow.component.sidenav.SideNavItem;
+import com.vaadin.flow.component.sidenav.SideNavVariant;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
-import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @Route("components")
 @PageTitle("Components — Vaadin Demo")
-public class ComponentsView extends VerticalLayout {
+public class ComponentsView extends View {
 
-    public ComponentsView(SourceService sourceService) {
-        setWidthFull();
-        setPadding(true);
-        setSpacing(false);
-        getStyle().set("gap", "var(--vaadin-gap-m)");
-
-        HorizontalLayout header = new HorizontalLayout();
-        header.addClassName("view-header");
-        header.setWidthFull();
-        header.setJustifyContentMode(JustifyContentMode.BETWEEN);
-        header.setAlignItems(Alignment.CENTER);
-
-        H2 pageTitle = new H2("Components");
-        pageTitle.getStyle().set("margin", "0");
-
-        Button viewSource = new Button(VaadinIcon.CODE.create());
-        viewSource.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON);
-        viewSource.setAriaLabel("View source");
-        viewSource.addClickListener(e -> new SourceViewerDialog(ComponentsView.class, sourceService).open());
-
-        header.add(pageTitle, viewSource);
-        add(header);
-
-        // Main component grid — auto-fill columns, min 280px
-        Div gallery = new Div();
-        gallery.addClassName("component-gallery");
-
-        gallery.add(
-            cardButtons(),
-            cardColors(),
-            cardInputs(),
-            cardSelect(),
-            cardDateTimePicker(),
-            cardCheckboxRadio(),
-            cardTypography(),
-            cardGrid(),
-            cardTabs(),
-            cardProgress(),
-            cardMenuBar(),
-            cardDialog()
-        );
-
-        add(gallery);
-    }
-
-    // ── Card helpers ──────────────────────────────────────────────────────
-
-    private Div card(String title) {
-        Div card = new Div();
-        card.getStyle()
-                .set("background", "var(--vaadin-background-color)")
-                .set("border", "1px solid var(--vaadin-border-color)")
-                .set("border-radius", "var(--vaadin-radius-l)")
-                .set("padding", "var(--vaadin-gap-m)")
-                .set("display", "flex")
-                .set("flex-direction", "column")
-                .set("gap", "var(--vaadin-gap-s)")
-                .set("box-shadow", "var(--aura-shadow-xs)");
-
-        Span cardTitle = new Span(title);
-        cardTitle.getStyle()
-                .set("font-size", "var(--aura-font-size-xs)")
-                .set("font-weight", "600")
-                .set("text-transform", "uppercase")
-                .set("letter-spacing", "0.06em")
-                .set("color", "var(--aura-text-color-tertiary)");
-        card.add(cardTitle);
-        return card;
-    }
+    private static final BadgeVariant[] BADGE_VARIANTS = {BadgeVariant.SUCCESS, BadgeVariant.ERROR, BadgeVariant.WARNING};
+    private static final String[] COUNTRIES = {
+            "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda",
+            "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain",
+            "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan",
+            "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria",
+            "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada",
+            "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros",
+            "Congo", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark",
+            "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador",
+            "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji",
+            "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece",
+            "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras",
+            "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel",
+            "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati",
+            "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia",
+            "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi",
+            "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania",
+            "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia",
+            "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal",
+            "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea",
+            "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama",
+            "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal",
+            "Qatar", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia",
+            "Saint Vincent and the Grenadines", "Samoa", "San Marino", "São Tomé and Príncipe",
+            "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore",
+            "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa",
+            "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname",
+            "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand",
+            "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey",
+            "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates",
+            "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu",
+            "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
+    };
+    private static final List<Person> PEOPLE = List.of(
+            new Person("Alice Johnson", "alice@example.com", "Active"),
+            new Person("Bob Smith", "bob@example.com", "Inactive"),
+            new Person("Carol White", "carol@example.com", "Active"),
+            new Person("David Brown", "david@example.com", "Pending"),
+            new Person("Eva Martinez", "eva@example.com", "Active"),
+            new Person("Frank Lee", "frank@example.com", "Active"),
+            new Person("Grace Kim", "grace@example.com", "Inactive"),
+            new Person("Henry Chen", "henry@example.com", "Active"),
+            new Person("Isla Scott", "isla@example.com", "Pending"),
+            new Person("James Walker", "james@example.com", "Active"),
+            new Person("Karen Hall", "karen@example.com", "Active"),
+            new Person("Liam Young", "liam@example.com", "Inactive"),
+            new Person("Mia Harris", "mia@example.com", "Active"),
+            new Person("Noah Clark", "noah@example.com", "Pending"),
+            new Person("Olivia Lewis", "olivia@example.com", "Active"),
+            new Person("Peter Robinson", "peter@example.com", "Active"),
+            new Person("Quinn Turner", "quinn@example.com", "Inactive"),
+            new Person("Rachel Adams", "rachel@example.com", "Active"),
+            new Person("Sam Mitchell", "sam@example.com", "Pending"),
+            new Person("Tina Nelson", "tina@example.com", "Active")
+    );
 
     // ── Individual cards ──────────────────────────────────────────────────
 
-    private Div cardButtons() {
-        Div c = card("Buttons");
+    public ComponentsView(SourceService sourceService) {
+        add(createHeader(sourceService));
 
-        FlexLayout row1 = new FlexLayout();
-        row1.getStyle().set("gap", "var(--vaadin-gap-s)").set("flex-wrap", "wrap");
+        Scroller scroller = new Scroller(createGrid());
+        scroller.addThemeVariants(ScrollerVariant.OVERFLOW_INDICATORS);
+        add(scroller);
+    }
 
+    /**
+     * Page header with drawer toggle, title, and source viewer button.
+     */
+    private ViewHeader createHeader(SourceService sourceService) {
+        DrawerToggle toggle = new DrawerToggle();
+        toggle.addThemeVariants(ButtonVariant.TERTIARY);
+
+        H1 title = new H1("Components");
+
+        Button viewSource = new Button(Lucide.CODE.create(), e -> new SourceViewerDialog(ComponentsView.class, sourceService).open());
+        viewSource.addThemeVariants(ButtonVariant.TERTIARY);
+        viewSource.setAriaLabel("View source");
+        viewSource.setTooltipText("View source");
+
+        return new ViewHeader(toggle, title, viewSource);
+    }
+
+    /**
+     * Grid of component showcase cards.
+     */
+    private Div createGrid() {
+        Div grid = new Div();
+        grid.addClassNames(Display.GRID, Tailwind.Grid.AUTO_ROWS_MIN_200, Tailwind.Grid.COLUMNS_AUTO_FIT_MIN_200, Tailwind.Grid.FLOW_DENSE, Gap.SMALL, Padding.Bottom.LARGE, Padding.Horizontal.XSMALL);
+        grid.add(
+                createButtonsCard(),
+                createNotificationCard(),
+                createBadgesCard(),
+                createRadioButtonGroupCard(),
+                createSideNavCard(),
+                createMenuBarCard(),
+                createTabsCard(),
+                createDialogCard(),
+                createDateTimePickerCard(),
+                createCheckboxGroupCard(),
+                createComboBoxCard(),
+                createTypographyCard(),
+                createGridCard(),
+                createSelectCard(),
+                createAvatarGroupCard(),
+                createMessageListCard(),
+                createTextFieldCard(),
+                createProgressBarCard(),
+                createMultiSelectComboBoxCard()
+        );
+        return grid;
+    }
+
+    private Card createButtonsCard() {
         Button primary = new Button("Primary");
-        primary.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        primary.addThemeVariants(ButtonVariant.PRIMARY);
 
         Button secondary = new Button("Default");
 
         Button tertiary = new Button("Tertiary");
-        tertiary.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        tertiary.addThemeVariants(ButtonVariant.TERTIARY);
 
-        Button icon = new Button(VaadinIcon.BELL.create());
-        icon.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_TERTIARY);
-        icon.setAriaLabel("Notifications");
-
-        row1.add(primary, secondary, tertiary, icon);
-
-        FlexLayout row2 = new FlexLayout();
-        row2.getStyle().set("gap", "var(--vaadin-gap-s)").set("flex-wrap", "wrap");
+        Button iconButton = new Button(Lucide.BELL_RING.create());
+        iconButton.addThemeVariants(ButtonVariant.TERTIARY);
+        iconButton.setAriaLabel("Notifications");
+        iconButton.setTooltipText("Notifications");
 
         Button success = new Button("Success");
-        success.addThemeVariants(ButtonVariant.LUMO_SUCCESS, ButtonVariant.LUMO_PRIMARY);
+        success.addThemeVariants(ButtonVariant.PRIMARY, ButtonVariant.SUCCESS);
 
         Button error = new Button("Error");
-        error.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
+        error.addThemeVariants(ButtonVariant.ERROR, ButtonVariant.PRIMARY);
 
-        Button notify = new Button("Show Notification", VaadinIcon.BELL.create());
-        notify.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        notify.addClickListener(e -> {
-            Notification n = Notification.show("Hello from Vaadin!", 2500, Notification.Position.BOTTOM_END);
-            n.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+        Div buttons = new Div(primary, secondary, tertiary, iconButton, error, success);
+        buttons.addClassNames(AlignContent.CENTER, Display.GRID, Tailwind.Grid.COLUMNS_3_AUTO, Gap.SMALL, Height.FULL, JustifyContent.CENTER);
+
+        Card card = new Card();
+        card.add(buttons);
+        card.addClassName(GridColumn.SPAN_2);
+        return card;
+    }
+
+    private Card createNotificationCard() {
+        Button button = new Button("Show Notification", Lucide.BELL_RING.create(), e -> {
+            Notification notification = new Notification();
+            notification.setDuration(0);
+            notification.setPosition(Notification.Position.TOP_END);
+
+            Card card = new Card();
+            card.addThemeNames(Theme.CARD_FOOTER_END, Theme.CARD_NO_FRAME);
+            card.addThemeVariants(CardVariant.HORIZONTAL);
+            card.setMedia(Lucide.MESSAGES_SQUARE.create());
+            card.setTitle("New Message from Olivia");
+            card.add(new Text("The AI chat UI is evolving with the integration of components..."));
+
+            Button show = new Button("Show", ev -> notification.close());
+            show.addThemeVariants(ButtonVariant.PRIMARY);
+            Button dismiss = new Button("Dismiss", ev -> notification.close());
+            card.addToFooter(show, dismiss);
+
+            notification.add(card);
+            notification.open();
         });
 
-        row2.add(success, error, notify);
-        c.add(row1, row2);
-        return c;
+        Div div = new Div(button);
+        div.addClassNames(AlignItems.CENTER, Display.FLEX, Height.FULL, JustifyContent.CENTER);
+
+        Card card = new Card();
+        card.add(div);
+        return card;
     }
 
-    private Div cardColors() {
-        Div c = card("Color Palette");
+    private Card createBadgesCard() {
+        Div badges = new Div();
+        badges.addClassNames(AlignItems.CENTER, Display.FLEX, Height.FULL, JustifyContent.CENTER, Gap.SMALL);
 
-        String[][] colors = {
-            {"Accent",  "var(--aura-accent-color)"},
-            {"Success", "var(--aura-green)"},
-            {"Error",   "var(--aura-red)"},
-            {"Warning", "var(--aura-orange)"},
-            {"Primary text",   "var(--aura-accent-text-color)"},
-            {"Body text",      "var(--vaadin-text-color)"},
-            {"Secondary text", "var(--vaadin-text-color-secondary)"},
-            {"Base",    "var(--vaadin-background-color)"},
-            {"Contrast 5%",  "var(--vaadin-background-container)"},
-            {"Contrast 10%", "var(--vaadin-border-color)"},
-            {"Contrast 20%", "var(--vaadin-border-color-secondary)"},
-            {"Contrast",     "var(--vaadin-text-color)"}
+        badges.add(createBadges());
+        badges.add(createBadges(BadgeVariant.FILLED));
+        badges.add(createIconBadges());
+        badges.add(createIconBadges(BadgeVariant.FILLED));
+
+        Card card = new Card();
+        card.add(badges);
+        card.addClassNames(GridColumn.SPAN_2, GridRow.SPAN_2);
+        return card;
+    }
+
+    private Div createBadges(BadgeVariant... variants) {
+        Div badges = new Div();
+        badges.addClassNames(Display.FLEX, FlexDirection.COLUMN, Gap.SMALL);
+
+        Badge defaultBadge = new Badge("Default");
+        defaultBadge.addThemeVariants(variants);
+        badges.add(defaultBadge);
+
+        for (BadgeVariant variant : BADGE_VARIANTS) {
+            String name = variant.getVariantName();
+            Badge badge = new Badge(Character.toUpperCase(name.charAt(0)) + name.substring(1));
+            badge.addThemeVariants(variant);
+            badge.addThemeVariants(variants);
+            badges.add(badge);
+        }
+        return badges;
+    }
+
+    private Div createIconBadges(BadgeVariant... variants) {
+        Div badges = new Div();
+        badges.addClassNames(Display.FLEX, FlexDirection.COLUMN, Gap.SMALL);
+
+        Badge defaultBadge = new Badge(Lucide.BELL_RING.create());
+        defaultBadge.addThemeVariants(BadgeVariant.ICON_ONLY);
+        defaultBadge.addThemeVariants(variants);
+        badges.add(defaultBadge);
+
+        for (BadgeVariant variant : BADGE_VARIANTS) {
+            Badge badge = new Badge(Lucide.BELL_RING.create());
+            badge.addThemeVariants(variant);
+            badge.addThemeVariants(BadgeVariant.ICON_ONLY);
+            badge.addThemeVariants(variants);
+            badges.add(badge);
+        }
+        return badges;
+    }
+
+    private Card createRadioButtonGroupCard() {
+        RadioButtonGroup<String> radioButtonGroup = new RadioButtonGroup<>("Options");
+        radioButtonGroup.setItems("Option 1", "Option 2", "Option 3");
+        radioButtonGroup.setValue("Option 1");
+
+        Div div = new Div(radioButtonGroup);
+        div.addClassNames(AlignItems.CENTER, Display.FLEX, Height.FULL, JustifyContent.CENTER);
+
+        Card card = new Card();
+        card.add(div);
+        return card;
+    }
+
+    private Card createSideNavCard() {
+        SideNav nav = new SideNav();
+        nav.addThemeVariants(SideNavVariant.AURA_FILLED);
+
+        SideNavItem components = createSideNavItem("Components", getClass(), Lucide.HOUSE);
+        Badge badge = new Badge();
+        badge.setNumber(2);
+        components.setSuffixComponent(badge);
+        nav.addItem(components);
+
+        nav.addItem(createSideNavItem("Grid View", Lucide.CHART_COLUMN_BIG));
+        nav.addItem(createSideNavItem("Reporting", Lucide.CHART_PIE));
+
+        SideNavItem settings = createSideNavItem("Settings", Lucide.SETTINGS);
+        settings.addItem(createSideNavItem("Account"));
+        settings.addItem(createSideNavItem("Preferences"));
+        settings.addItem(createSideNavItem("Subscription"));
+        nav.addItem(settings);
+
+        nav.addItem(createSideNavItem("Support", Lucide.MESSAGES_SQUARE));
+
+        Div div = new Div(nav);
+        div.addClassNames(AlignItems.CENTER, Display.FLEX, Height.FULL, JustifyContent.CENTER);
+
+        Card card = new Card();
+        card.add(div);
+        card.addClassName(GridRow.SPAN_2);
+        return card;
+    }
+
+    private SideNavItem createSideNavItem(String label) {
+        return new SideNavItem(label);
+    }
+
+    private SideNavItem createSideNavItem(String label, Lucide icon) {
+        SideNavItem item = new SideNavItem(label);
+        item.setPrefixComponent(icon.create());
+        return item;
+    }
+
+    private SideNavItem createSideNavItem(String label, Class<? extends Component> view, Lucide icon) {
+        return new SideNavItem(label, view, icon.create());
+    }
+
+    private Card createMenuBarCard() {
+        MenuBar menuBar = new MenuBar();
+        MenuItem actions = menuBar.addItem("Actions");
+
+        actions.getSubMenu().addItem("Edit");
+        actions.getSubMenu().addItem("Duplicate");
+        actions.getSubMenu().addSeparator();
+
+        MenuItem archive = actions.getSubMenu().addItem("Archive");
+        archive.addComponentAsFirst(Lucide.ARCHIVE.create());
+        Badge badge = new Badge();
+        badge.addClassName(Aura.ACCENT_PURPLE);
+        badge.setNumber(2);
+        archive.add(badge);
+
+        MenuItem more = actions.getSubMenu().addItem("More");
+        more.getSubMenu().addItem("Move to Project...");
+        more.getSubMenu().addItem("Move to Folder...");
+        more.getSubMenu().addSeparator();
+
+        MenuItem advancedOptions = more.getSubMenu().addItem("Advanced Options");
+        advancedOptions.getSubMenu().addItem("Show All").setCheckable(true);
+        advancedOptions.getSubMenu().addItem("Show Hidden Items").setCheckable(true);
+        advancedOptions.getSubMenu().addSeparator();
+        advancedOptions.getSubMenu().addItem("Open...");
+
+        actions.getSubMenu().addSeparator();
+        actions.getSubMenu().addItem("Share");
+        actions.getSubMenu().addItem("Add to Favorites");
+        actions.getSubMenu().addSeparator();
+        actions.getSubMenu().addItem("Delete").addClassName(Aura.ACCENT_RED);
+
+        Div div = new Div(menuBar);
+        div.addClassNames(AlignItems.CENTER, Display.FLEX, Height.FULL, JustifyContent.CENTER);
+
+        Card card = new Card();
+        card.add(div);
+        return card;
+    }
+
+    private Card createTabsCard() {
+        Badge badge = new Badge();
+        badge.setNumber(2);
+
+        Tab details = new Tab(new Span("Details"), badge);
+        Tab preferences = new Tab("Preferences");
+        Tab settings = new Tab("Settings");
+
+        Tabs tabs = new Tabs(details, preferences, settings);
+
+        Div div = new Div(tabs);
+        div.addClassNames(AlignItems.CENTER, Display.FLEX, Height.FULL, JustifyContent.CENTER);
+
+        Card card = new Card();
+        card.add(div);
+        card.addClassName(GridColumn.SPAN_2);
+        return card;
+    }
+
+    private Card createDialogCard() {
+        Button button = new Button("Open Dialog", e -> {
+            ConfirmDialog dialog = new ConfirmDialog();
+            dialog.setHeader("Unsaved Changes");
+            dialog.setText("Do you want to save or discard the changes? That is the question. But whatever you choose, there will be no consequences.");
+            dialog.setCancelable(true);
+            dialog.setRejectable(true);
+            dialog.setRejectText("Discard");
+            dialog.setConfirmText("Save");
+            dialog.open();
+        });
+
+        Div div = new Div(button);
+        div.addClassNames(AlignItems.CENTER, Display.FLEX, Height.FULL, JustifyContent.CENTER);
+
+        Card card = new Card();
+        card.add(div);
+        return card;
+    }
+
+    private Card createDateTimePickerCard() {
+        DateTimePicker dateTimePicker = new DateTimePicker();
+        dateTimePicker.setValue(LocalDateTime.now());
+        dateTimePicker.setWidth("20em");
+
+        Div div = new Div(dateTimePicker);
+        div.addClassNames(AlignItems.CENTER, Display.FLEX, Height.FULL, JustifyContent.CENTER);
+
+        Card card = new Card();
+        card.add(div);
+        card.addClassName(GridColumn.SPAN_2);
+        return card;
+    }
+
+    private Card createComboBoxCard() {
+        ComboBox<String> comboBox = new ComboBox<>("Country");
+        comboBox.setItems(COUNTRIES);
+        comboBox.setValue("Finland");
+
+        Div div = new Div(comboBox);
+        div.addClassNames(AlignItems.CENTER, Display.FLEX, Height.FULL, JustifyContent.CENTER);
+
+        Card card = new Card();
+        card.add(div);
+        return card;
+    }
+
+    private Card createCheckboxGroupCard() {
+        CheckboxGroup<String> checkboxGroup = new CheckboxGroup<>("Options");
+        checkboxGroup.setItems("Option 1", "Option 2", "Option 3");
+        checkboxGroup.setValue(Collections.singleton("Option 1"));
+
+        Div div = new Div(checkboxGroup);
+        div.addClassNames(AlignItems.CENTER, Display.FLEX, Height.FULL, JustifyContent.CENTER);
+
+        Card card = new Card();
+        card.add(div);
+        return card;
+    }
+
+    private Card createTypographyCard() {
+        String[][] sizes = {
+                {FontSize.XLARGE, LineHeight.XLARGE},
+                {FontSize.LARGE, LineHeight.LARGE},
+                {FontSize.MEDIUM, LineHeight.MEDIUM},
+                {FontSize.SMALL, LineHeight.SMALL},
+                {FontSize.XSMALL, LineHeight.XSMALL},
         };
 
-        FlexLayout swatches = new FlexLayout();
-        swatches.getStyle().set("gap", "var(--vaadin-gap-xs)").set("flex-wrap", "wrap");
-
-        for (String[] color : colors) {
-            Div swatch = new Div();
-            swatch.getElement().setAttribute("title", color[0]);
-            swatch.getStyle()
-                    .set("width", "24px").set("height", "24px")
-                    .set("border-radius", "50%")
-                    .set("background", color[1])
-                    .set("border", "1px solid var(--vaadin-border-color-secondary)")
-                    .set("cursor", "default");
-            swatches.add(swatch);
+        Div div = new Div();
+        div.addClassNames(AlignItems.CENTER, Display.FLEX, FlexDirection.COLUMN, FontWeight.SEMIBOLD, Height.FULL, JustifyContent.CENTER);
+        for (String[] size : sizes) {
+            Div heading = new Div("Heading");
+            heading.addClassNames(size[0], size[1]);
+            div.add(heading);
         }
 
-        // Badges row
-        FlexLayout badges = new FlexLayout();
-        badges.getStyle().set("gap", "var(--vaadin-gap-xs)").set("flex-wrap", "wrap").set("margin-top", "var(--vaadin-gap-xs)");
-        for (String[] t : new String[][]{{"Default",""}, {"Success","success"}, {"Error","error"}, {"Contrast","contrast"}, {"Primary","primary"}}) {
-            Span b = new Span(t[0]);
-            b.getElement().setAttribute("theme", "badge " + t[1]);
-            badges.add(b);
-        }
-
-        c.add(swatches, badges);
-        return c;
+        Card card = new Card();
+        card.add(div);
+        return card;
     }
 
-    private Div cardInputs() {
-        Div c = card("Text Inputs");
+    private Card createGridCard() {
+        Grid<Person> grid = new Grid<>(Person.class, false);
+        grid.addThemeVariants(GridVariant.NO_BORDER);
+        grid.setItems(PEOPLE);
+        grid.setSelectionMode(Grid.SelectionMode.MULTI);
 
-        TextField text = new TextField("Name");
-        text.setPlaceholder("Enter name...");
-        text.setWidthFull();
+        grid.addComponentColumn(p -> {
+            Avatar avatar = new Avatar(p.name());
+            avatar.setColorIndex(PEOPLE.indexOf(p) % 7);
+            return avatar;
+        }).setAutoWidth(true).setFlexGrow(0);
 
-        TextField withIcon = new TextField("Search");
-        withIcon.setPrefixComponent(VaadinIcon.SEARCH.create());
-        withIcon.setClearButtonVisible(true);
-        withIcon.setWidthFull();
+        grid.addColumn(Person::name).setHeader("Name");
+        grid.addColumn(Person::email).setHeader("Email");
 
-        TextArea area = new TextArea("Description");
-        area.setPlaceholder("Enter description...");
-        area.setWidthFull();
-        area.setMaxHeight("80px");
+        grid.addComponentColumn(person -> {
+            Badge badge = new Badge(person.status());
+            if ("Active".equals(person.status())) badge.addThemeVariants(BadgeVariant.SUCCESS);
+            if ("Inactive".equals(person.status())) badge.addThemeVariants(BadgeVariant.ERROR);
+            return badge;
+        }).setHeader("Status");
 
-        c.add(text, withIcon, area);
-        return c;
+        Card card = new Card();
+        card.add(grid);
+        card.addClassNames(GridColumn.SPAN_3, GridRow.SPAN_2);
+        return card;
     }
 
-    private Div cardSelect() {
-        Div c = card("Select & ComboBox");
-
+    private Card createSelectCard() {
         Select<String> select = new Select<>();
         select.setLabel("Options");
         select.setItems("Option 1", "Option 2", "Option 3");
         select.setValue("Option 1");
-        select.setWidthFull();
 
-        ComboBox<String> combo = new ComboBox<>("Country");
-        combo.setItems("Andorra", "Australia", "Austria", "Belgium", "Brazil",
-                "Canada", "Denmark", "Finland", "France", "Germany",
-                "Iceland", "Ireland", "Italy", "Japan", "Netherlands",
-                "New Zealand", "Norway", "Portugal", "Spain", "Sweden", "Switzerland");
-        combo.setValue("Andorra");
-        combo.setWidthFull();
+        Div div = new Div(select);
+        div.addClassNames(AlignItems.CENTER, Display.FLEX, Height.FULL, JustifyContent.CENTER);
 
-        c.add(select, combo);
-        return c;
+        Card card = new Card();
+        card.add(div);
+        return card;
     }
 
-    private Div cardDateTimePicker() {
-        Div c = card("Date & Time Pickers");
+    private Card createAvatarGroupCard() {
+        String[] names = {
+                "Alice Johnson", "Bob Smith", "Carol White", "David Brown", "Eva Martinez",
+                "Frank Lee", "Grace Kim", "Henry Chen", "Isla Scott"
+        };
 
-        DatePicker datePicker = new DatePicker("Date");
-        datePicker.setValue(LocalDate.now());
-        datePicker.setWidthFull();
-
-        TimePicker timePicker = new TimePicker("Time");
-        timePicker.setValue(LocalTime.of(12, 0));
-        timePicker.setWidthFull();
-
-        c.add(datePicker, timePicker);
-        return c;
-    }
-
-    private Div cardCheckboxRadio() {
-        Div c = card("Checkbox & Radio");
-
-        Div checkboxGroup = new Div();
-        checkboxGroup.getStyle().set("display", "flex").set("flex-direction", "column").set("gap", "var(--vaadin-gap-xs)");
-        Span checkLabel = new Span("Options");
-        checkLabel.getStyle().set("font-size", "var(--aura-font-size-s)").set("font-weight", "500");
-        checkboxGroup.add(checkLabel);
-        for (String opt : new String[]{"Option 1", "Option 2", "Option 3"}) {
-            Checkbox cb = new Checkbox(opt);
-            cb.setValue(opt.equals("Option 1"));
-            checkboxGroup.add(cb);
+        AvatarGroup avatarGroup = new AvatarGroup();
+        int colorIndex = 0;
+        for (String name : names) {
+            AvatarGroupItem avatar = new AvatarGroupItem(name);
+            avatar.setColorIndex(colorIndex++);
+            avatarGroup.add(avatar);
         }
 
-        RadioButtonGroup<String> radio = new RadioButtonGroup<>();
-        radio.setLabel("Sizes");
-        radio.setItems("Small", "Medium", "Large");
-        radio.setValue("Medium");
+        Div div = new Div(avatarGroup);
+        div.addClassNames(AlignItems.CENTER, Display.FLEX, Height.FULL, JustifyContent.CENTER);
 
-        c.add(checkboxGroup, radio);
-        return c;
+        Card card = new Card();
+        card.add(div);
+        return card;
     }
 
-    private Div cardTypography() {
-        Div c = card("Typography");
+    private Card createMessageListCard() {
+        MessageListItem matt = new MessageListItem(
+                "Nature does not hurry, yet everything gets accomplished.",
+                Instant.now().minus(2, ChronoUnit.MINUTES),
+                "Matt Mambo");
+        matt.setUserColorIndex(1);
 
-        H1 h1 = new H1("Heading 1");
-        h1.getStyle().set("margin", "0").set("font-size", "var(--aura-font-size-xl)");
-        H2 h2 = new H2("Heading 2");
-        h2.getStyle().set("margin", "0").set("font-size", "var(--aura-font-size-l)");
-        H3 h3 = new H3("Heading 3");
-        h3.getStyle().set("margin", "0").set("font-size", "var(--aura-font-size-m)");
-        H4 h4 = new H4("Heading 4");
-        h4.getStyle().set("margin", "0").set("font-size", "var(--aura-font-size-s)");
-        H5 h5 = new H5("Heading 5");
-        h5.getStyle().set("margin", "0").set("font-size", "var(--aura-font-size-xs)");
+        MessageListItem lindsey = new MessageListItem(
+                "Using your talent, hobby or profession in a way that makes you contribute with something good to this world is truly the way to go.",
+                Instant.now(),
+                "Lindsey Listy");
+        lindsey.setUserColorIndex(2);
 
-        Paragraph body = new Paragraph("Body text — the quick brown fox jumps over the lazy dog.");
-        body.getStyle().set("margin", "0").set("font-size", "var(--aura-font-size-s)");
+        MessageList list = new MessageList(matt, lindsey);
 
-        Span secondary = new Span("Secondary text");
-        secondary.getStyle().set("color", "var(--vaadin-text-color-secondary)").set("font-size", "var(--aura-font-size-xs)");
+        MessageInput input = new MessageInput();
 
-        c.add(h1, h2, h3, h4, h5, body, secondary);
-        return c;
+        Div div = new Div(list, input);
+        div.addClassNames(Display.FLEX, FlexDirection.COLUMN, Gap.MEDIUM, JustifyContent.CENTER, Height.FULL);
+
+        Card card = new Card();
+        card.add(div);
+        card.addClassNames(GridColumn.SPAN_2, GridRow.SPAN_2);
+        return card;
     }
 
-    record Row(String name, String email, String status) {}
+    private Card createProgressBarCard() {
+        ProgressBar progressBar = new ProgressBar(0, 100, 50);
 
-    private Div cardGrid() {
-        Div c = card("Grid");
-        c.getStyle().set("grid-column", "span 2");
+        Div div = new Div(progressBar);
+        div.addClassNames(AlignItems.CENTER, Display.FLEX, Height.FULL, JustifyContent.CENTER);
 
-        Grid<Row> grid = new Grid<>(Row.class, false);
-        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_ROW_STRIPES);
-        grid.addColumn(Row::name).setHeader("Name").setFlexGrow(1);
-        grid.addColumn(Row::email).setHeader("Email").setFlexGrow(1);
-        grid.addComponentColumn(row -> {
-            Span badge = new Span(row.status());
-            String theme = switch (row.status()) {
-                case "Active" -> "badge success";
-                case "Inactive" -> "badge error";
-                default -> "badge contrast";
-            };
-            badge.getElement().setAttribute("theme", theme);
-            return badge;
-        }).setHeader("Status").setAutoWidth(true).setFlexGrow(0);
-
-        grid.setItems(List.of(
-            new Row("Alice Johnson", "alice@example.com", "Active"),
-            new Row("Bob Smith", "bob@example.com", "Active"),
-            new Row("Carol White", "carol@example.com", "Inactive"),
-            new Row("David Brown", "david@example.com", "Active"),
-            new Row("Eva Martinez", "eva@example.com", "Pending")
-        ));
-        grid.setAllRowsVisible(true);
-        c.add(grid);
-        return c;
+        Card card = new Card();
+        card.add(div);
+        return card;
     }
 
-    private Div cardTabs() {
-        Div c = card("Tabs");
+    private Card createMultiSelectComboBoxCard() {
+        MultiSelectComboBox<String> comboBox = new MultiSelectComboBox<>("Country");
+        comboBox.setItems(COUNTRIES);
+        comboBox.setValue(Set.of("Finland", "Sweden"));
 
-        Tabs tabs = new Tabs();
-        tabs.add(new Tab("Overview"), new Tab("Details"), new Tab("Settings"));
-        tabs.setWidthFull();
+        Div div = new Div(comboBox);
+        div.addClassNames(AlignItems.CENTER, Display.FLEX, Height.FULL, JustifyContent.CENTER);
 
-        Div content = new Div();
-        content.getStyle()
-                .set("padding", "var(--vaadin-gap-s)")
-                .set("background", "var(--vaadin-background-container)")
-                .set("border-radius", "var(--vaadin-radius-m)")
-                .set("font-size", "var(--aura-font-size-s)")
-                .set("color", "var(--vaadin-text-color-secondary)");
-        content.setText("Tab content area");
-
-        c.add(tabs, content);
-        return c;
+        Card card = new Card();
+        card.add(div);
+        return card;
     }
 
-    private Div cardProgress() {
-        Div c = card("Progress");
+    private Card createTextFieldCard() {
+        TextField textField = new TextField();
+        textField.setClearButtonVisible(true);
+        textField.setPrefixComponent(Lucide.FOLDER.create());
+        textField.setValue("Projects");
 
-        ProgressBar pb1 = new ProgressBar(0, 100, 65);
-        pb1.setWidthFull();
+        Div div = new Div(textField);
+        div.addClassNames(AlignItems.CENTER, Display.FLEX, Height.FULL, JustifyContent.CENTER);
 
-        Span label1 = new Span("65% complete");
-        label1.getStyle().set("font-size", "var(--aura-font-size-xs)").set("color", "var(--vaadin-text-color-secondary)");
-
-        ProgressBar pb2 = new ProgressBar(0, 100, 30);
-        pb2.setWidthFull();
-        pb2.getElement().setAttribute("theme", "error");
-
-        Span label2 = new Span("30% — low");
-        label2.getStyle().set("font-size", "var(--aura-font-size-xs)").set("color", "var(--aura-red-text)");
-
-        ProgressBar pb3 = new ProgressBar();
-        pb3.setIndeterminate(true);
-        pb3.setWidthFull();
-
-        Span label3 = new Span("Indeterminate");
-        label3.getStyle().set("font-size", "var(--aura-font-size-xs)").set("color", "var(--vaadin-text-color-secondary)");
-
-        c.add(pb1, label1, pb2, label2, pb3, label3);
-        return c;
+        Card card = new Card();
+        card.add(div);
+        return card;
     }
 
-    private Div cardMenuBar() {
-        Div c = card("Menu Bar");
-
-        MenuBar menuBar = new MenuBar();
-        menuBar.setWidthFull();
-        var actions = menuBar.addItem("Actions");
-        actions.getSubMenu().addItem("Edit");
-        actions.getSubMenu().addItem("Duplicate");
-        actions.getSubMenu().addItem("Archive");
-        actions.getSubMenu().addItem("Delete");
-
-        var view = menuBar.addItem("View");
-        view.getSubMenu().addItem("Compact");
-        view.getSubMenu().addItem("Comfortable");
-
-        var moreItem = menuBar.addItem(VaadinIcon.ELLIPSIS_DOTS_V.create());
-        moreItem.setAriaLabel("More actions");
-
-        HorizontalLayout row = new HorizontalLayout();
-        row.getStyle().set("gap", "var(--vaadin-gap-s)").set("flex-wrap", "wrap");
-
-        for (String[] b : new String[][]{{"Filled",""}, {"Outlined","tertiary"}, {"Small","small"}}) {
-            Span badge = new Span(b[0]);
-            badge.getElement().setAttribute("theme", "badge" + (b[1].isEmpty() ? "" : " " + b[1]));
-            row.add(badge);
-        }
-
-        c.add(menuBar, row);
-        return c;
-    }
-
-    private Div cardDialog() {
-        Div c = card("Dialog & Notification");
-
-        Button openDialog = new Button("Open Dialog", VaadinIcon.EXTERNAL_LINK.create());
-        openDialog.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        openDialog.addClickListener(e -> {
-            Dialog d = new Dialog();
-            d.setHeaderTitle("Example Dialog");
-            VerticalLayout content = new VerticalLayout();
-            content.setPadding(false);
-            content.add(new Paragraph("This is a Vaadin Dialog component."));
-            TextField field = new TextField("Your input");
-            field.setWidthFull();
-            content.add(field);
-            d.add(content);
-            Button confirm = new Button("Confirm", ev -> {
-                d.close();
-                Notification.show("Confirmed: " + field.getValue(), 2000, Notification.Position.BOTTOM_END);
-            });
-            confirm.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-            d.getFooter().add(new Button("Cancel", ev -> d.close()), confirm);
-            d.open();
-        });
-
-        Button toastInfo = new Button("Info Toast");
-        toastInfo.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        toastInfo.addClickListener(e -> Notification.show("Info notification", 2000, Notification.Position.BOTTOM_END));
-
-        Button toastSuccess = new Button("Success Toast");
-        toastSuccess.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        toastSuccess.addClickListener(e -> {
-            Notification n = Notification.show("Operation successful!", 2000, Notification.Position.BOTTOM_END);
-            n.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-        });
-
-        Button toastError = new Button("Error Toast");
-        toastError.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        toastError.addClickListener(e -> {
-            Notification n = Notification.show("Something went wrong", 2000, Notification.Position.BOTTOM_END);
-            n.addThemeVariants(NotificationVariant.LUMO_ERROR);
-        });
-
-        FlexLayout btns = new FlexLayout(toastInfo, toastSuccess, toastError);
-        btns.getStyle().set("gap", "var(--vaadin-gap-s)").set("flex-wrap", "wrap");
-
-        c.add(openDialog, btns);
-        return c;
+    record Person(String name, String email, String status) {
     }
 }
