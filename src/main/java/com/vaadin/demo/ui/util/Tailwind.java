@@ -14,6 +14,7 @@ public final class Tailwind {
 
     public static final class AlignItems {
         public static final String CENTER = "items-center";
+        public static final String START = "items-start";
 
         private AlignItems() {
         }
@@ -26,8 +27,15 @@ public final class Tailwind {
         }
     }
 
+    public static final class BorderColor {
+        public static final String SECONDARY = "border-border-secondary";
+
+        private BorderColor() {
+        }
+    }
+
     public static final class Color {
-        public static final String SECONDARY = "text-secondary";
+        public static final String SECONDARY = "text-text-secondary";
 
         private Color() {
         }
@@ -85,7 +93,7 @@ public final class Tailwind {
     }
 
     public static final class FontWeight {
-        public static final String MEDIUM   = "font-medium";
+        public static final String MEDIUM = "font-medium";
         public static final String SEMIBOLD = "font-semibold";
 
         private FontWeight() {
@@ -108,34 +116,13 @@ public final class Tailwind {
 
         private Gap() {
         }
-
-        public static final class Column {
-            public static final String XSMALL = "gap-x-xs";
-            public static final String SMALL = "gap-x-s";
-            public static final String MEDIUM = "gap-x-m";
-            public static final String LARGE = "gap-x-l";
-            public static final String XLARGE = "gap-x-xl";
-
-            private Column() {
-            }
-        }
-
-        public static final class Row {
-            public static final String XSMALL = "gap-y-xs";
-            public static final String SMALL = "gap-y-s";
-            public static final String MEDIUM = "gap-y-m";
-            public static final String LARGE = "gap-y-l";
-            public static final String XLARGE = "gap-y-xl";
-
-            private Row() {
-            }
-        }
     }
 
     public static final class Grid {
         public static final String AUTO_ROWS_MIN_200 = "auto-rows-[minmax(200px,auto)]";
         public static final String COLUMNS_3_AUTO = "grid-cols-[repeat(3,auto)]";
-        public static final String COLUMNS_AUTO_FIT_MIN_200 = "grid-cols-[repeat(auto-fit,minmax(200px,1fr))]";
+        public static final String COLUMNS_AUTO_FIT_MIN_256 = "grid-cols-[repeat(auto-fit,minmax(256px,1fr))]";
+        public static final String COLUMNS_AUTO_FIT_MIN_320 = "grid-cols-[repeat(auto-fit,minmax(320px,1fr))]";
         public static final String FLOW_DENSE = "grid-flow-dense";
 
         private Grid() {
@@ -165,7 +152,17 @@ public final class Tailwind {
     }
 
     public static final class Margin {
+        public static final String ZERO = "m-0";
+
         private Margin() {
+        }
+
+        public static final class Horizontal {
+            public static final String XSMALL = "mx-xs";
+            public static final String MEDIUM = "mx-m";
+
+            private Horizontal() {
+            }
         }
 
         public static final class Start {
@@ -176,9 +173,16 @@ public final class Tailwind {
         }
 
         public static final class Top {
-            public static final String XSMALL = "mt-xs";
+            public static final String LARGE = "mt-l";
 
             private Top() {
+            }
+        }
+
+        public static final class Vertical {
+            public static final String LARGE = "my-l";
+
+            private Vertical() {
             }
         }
     }
@@ -198,13 +202,14 @@ public final class Tailwind {
     }
 
     public static final class Padding {
+        public static final String ZERO = "p-0";
+        public static final String LARGE = "p-l";
+
         private Padding() {
         }
 
         public static final class Bottom {
-            public static final String XSMALL  = "pb-xs";
-            public static final String MEDIUM  = "pb-m";
-            public static final String LARGE   = "pb-l";
+            public static final String LARGE = "pb-l";
 
             private Bottom() {
             }
@@ -218,15 +223,17 @@ public final class Tailwind {
             }
         }
 
-        public static final class Top {
-            public static final String NONE = "pt-0";
+        public static final class Vertical {
+            public static final String LARGE = "py-l";
+            public static final String XLARGE = "py-xl";
 
-            private Top() {
+            private Vertical() {
             }
         }
     }
 
     public static final class Width {
+        public static final String FIT = "w-fit";
         public static final String FULL = "w-full";
     }
 }

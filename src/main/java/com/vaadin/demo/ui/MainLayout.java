@@ -4,6 +4,7 @@ import com.vaadin.demo.ui.component.ViewFooter;
 import com.vaadin.demo.ui.component.ViewHeader;
 import com.vaadin.demo.ui.component.ViewHeading;
 import com.vaadin.demo.ui.util.Lucide;
+import com.vaadin.demo.ui.util.Tailwind.Margin;
 import com.vaadin.demo.ui.util.Theme;
 import com.vaadin.demo.ui.view.*;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -15,6 +16,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Hr;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.Scroller;
+import com.vaadin.flow.component.orderedlayout.ScrollerVariant;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.router.Layout;
@@ -33,10 +35,8 @@ public class MainLayout extends AppLayout {
         // Header
         Avatar appLogo = new Avatar();
         appLogo.addThemeNames(Theme.AVATAR_VAADIN, Theme.AVATAR_SQUARE);
-        appLogo.addThemeVariants(AvatarVariant.AURA_FILLED);
-        appLogo.getStyle()
-                .set("--vaadin-avatar-size", "1.25lh")
-                .set("margin-inline", "calc(var(--vaadin-padding-inline-container) - var(--vaadin-side-nav-item-border-width) - (var(--vaadin-avatar-size) - var(--vaadin-icon-size, 1lh)) / 2)");
+        appLogo.addThemeVariants(AvatarVariant.AURA_FILLED, AvatarVariant.XSMALL);
+        appLogo.addClassName(Margin.Horizontal.XSMALL);
 
         ViewHeading appName = new ViewHeading("Vaadin Demo");
 
@@ -69,12 +69,12 @@ public class MainLayout extends AppLayout {
         adminNav.setCollapsible(true);
 
         Scroller scroller = new Scroller();
+        scroller.addThemeVariants(ScrollerVariant.OVERFLOW_INDICATORS);
         scroller.getElement().appendChild(nav.getElement(), new Hr().getElement(), workspaceNav.getElement(), new Hr().getElement(), growthNav.getElement(), new Hr().getElement(), adminNav.getElement());
 
         // Footer
         Avatar avatar = new Avatar("John Smith");
-        avatar.addThemeVariants(AvatarVariant.AURA_FILLED);
-        avatar.getStyle().set("--vaadin-avatar-size", "1.25lh");
+        avatar.addThemeVariants(AvatarVariant.AURA_FILLED, AvatarVariant.XSMALL);
         avatar.setAbbreviation("J");
 
         Button button = new Button("John Smith");

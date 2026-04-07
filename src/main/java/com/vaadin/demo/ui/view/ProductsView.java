@@ -26,6 +26,7 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.provider.ListDataView;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -36,11 +37,19 @@ import static com.vaadin.demo.ui.util.Tailwind.*;
 public class ProductsView extends View {
 
     public ProductsView(SourceService sourceService) {
-        add(createHeader(sourceService));
+        add(
+                createHeader(sourceService),
+                createContent()
+        );
+    }
 
+    /**
+     * Main content area containing the products card.
+     */
+    private Div createContent() {
         Div content = new Div(createProductsCard());
         content.addClassNames(Display.FLEX, Overflow.HIDDEN, Padding.Bottom.LARGE, Padding.Horizontal.LARGE);
-        add(content);
+        return content;
     }
 
     /**
@@ -102,7 +111,22 @@ public class ProductsView extends View {
         var dataView = grid.setItems(SampleData.products());
         grid.setHeightFull();
 
-        // Header row filters
+        appendFilterRow(grid, dataView, nameCol, categoryCol, statusCol, priceCol, stockCol, actionsCol);
+        return grid;
+    }
+
+    /**
+     * Appends a header filter row to the grid wired to the given data view.
+     */
+    private void appendFilterRow(
+            Grid<SampleData.Product> grid,
+            ListDataView<SampleData.Product, ?> dataView,
+            Grid.Column<SampleData.Product> nameCol,
+            Grid.Column<SampleData.Product> categoryCol,
+            Grid.Column<SampleData.Product> statusCol,
+            Grid.Column<SampleData.Product> priceCol,
+            Grid.Column<SampleData.Product> stockCol,
+            Grid.Column<SampleData.Product> actionsCol) {
         HeaderRow filterRow = grid.appendHeaderRow();
 
         TextField nameFilter = new TextField();
@@ -136,8 +160,6 @@ public class ProductsView extends View {
         nameFilter.addValueChangeListener(e -> applyFilter.run());
         categoryFilter.addValueChangeListener(e -> applyFilter.run());
         statusFilter.addValueChangeListener(e -> applyFilter.run());
-
-        return grid;
     }
 
     /**
@@ -157,12 +179,29 @@ public class ProductsView extends View {
      * Opens a dialog to add a new product or edit an existing one.
      */
     private void openProductDialog(SampleData.Product product) {
-        Dialog dialog = new Dialog();
+        FormLayout form = createProductForm(product);
+
+        Dialog dialog = new Dialog(form);
         dialog.setHeaderTitle(product == null ? "Add Product" : "Edit Product");
         dialog.setWidth("400px");
 
-        FormLayout form = new FormLayout();
+        Button save = new Button("Save", e -> {
+            dialog.close();
+            notify(product == null ? "Product created successfully" : "Product updated successfully", NotificationVariant.SUCCESS);
+        });
+        save.addThemeVariants(ButtonVariant.PRIMARY);
 
+        Button cancel = new Button("Cancel", e -> dialog.close());
+        cancel.addThemeVariants(ButtonVariant.TERTIARY);
+
+        dialog.getFooter().add(cancel, save);
+        dialog.open();
+    }
+
+    /**
+     * Form pre-populated with the given product's values, or defaults for a new product.
+     */
+    private FormLayout createProductForm(SampleData.Product product) {
         TextField name = new TextField("Name");
         name.setValue(product != null ? product.name() : "");
 
@@ -183,20 +222,9 @@ public class ProductsView extends View {
         status.setItems("Active", "Beta", "Deprecated", "Inactive");
         status.setValue(product != null ? product.status() : "Active");
 
+        FormLayout form = new FormLayout();
         form.add(name, category, price, stock, status);
-        dialog.add(form);
-
-        Button save = new Button("Save", e -> {
-            dialog.close();
-            notify(product == null ? "Product created successfully" : "Product updated successfully", NotificationVariant.SUCCESS);
-        });
-        save.addThemeVariants(ButtonVariant.PRIMARY);
-
-        Button cancel = new Button("Cancel", e -> dialog.close());
-        cancel.addThemeVariants(ButtonVariant.TERTIARY);
-
-        dialog.getFooter().add(cancel, save);
-        dialog.open();
+        return form;
     }
 
     /**

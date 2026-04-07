@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
+  content: ['./src/**/*.{html,js,ts,jsx,tsx,java}'],
   theme: {
     extend: {
       // ─── Typography ───────────────────────────────────────────────
@@ -58,14 +58,12 @@ export default {
 
         // Text hierarchy
         text: {
-          DEFAULT: 'var(--vaadin-text-color)',
           secondary: 'var(--vaadin-text-color-secondary)',
           disabled: 'var(--vaadin-text-color-disabled)',
         },
 
         // Borders
         border: {
-          DEFAULT: 'var(--vaadin-border-color)',
           secondary: 'var(--vaadin-border-color-secondary)',
         },
 

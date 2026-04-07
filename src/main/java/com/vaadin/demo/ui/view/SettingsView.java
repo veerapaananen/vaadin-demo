@@ -3,66 +3,102 @@ package com.vaadin.demo.ui.view;
 import com.vaadin.demo.data.SampleData;
 import com.vaadin.demo.service.SourceService;
 import com.vaadin.demo.ui.component.SourceViewerDialog;
+import com.vaadin.demo.ui.component.View;
+import com.vaadin.demo.ui.component.ViewHeader;
+import com.vaadin.demo.ui.util.Lucide;
+import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.card.Card;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.*;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.orderedlayout.Scroller;
+import com.vaadin.flow.component.orderedlayout.ScrollerVariant;
 import com.vaadin.flow.component.select.Select;
-import com.vaadin.flow.component.tabs.TabSheet;
+import com.vaadin.flow.component.tabs.Tab;
+import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
+import static com.vaadin.demo.ui.util.Tailwind.*;
+
 @Route("settings")
 @PageTitle("Settings — Vaadin Demo")
-public class SettingsView extends VerticalLayout {
+public class SettingsView extends View {
 
     public SettingsView(SourceService sourceService) {
-        setWidthFull();
-        setPadding(true);
-        setSpacing(false);
-        getStyle().set("gap", "var(--vaadin-gap-m)");
-
-        // Header
-        HorizontalLayout header = new HorizontalLayout();
-        header.addClassName("view-header");
-        header.setWidthFull();
-        header.setJustifyContentMode(JustifyContentMode.BETWEEN);
-        header.setAlignItems(Alignment.CENTER);
-
-        H2 title = new H2("Settings");
-        title.getStyle().set("margin", "0");
-
-        Button viewSource = new Button(VaadinIcon.CODE.create());
-        viewSource.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON);
-        viewSource.setAriaLabel("View source");
-        viewSource.addClickListener(e -> new SourceViewerDialog(SettingsView.class, sourceService).open());
-
-        header.add(title, viewSource);
-        add(header);
-
-        TabSheet tabSheet = new TabSheet();
-        tabSheet.setWidthFull();
-
-        tabSheet.add("General", buildGeneralTab());
-        tabSheet.add("Notifications", buildNotificationsTab());
-        tabSheet.add("Security", buildSecurityTab());
-        tabSheet.add("Integrations", buildIntegrationsTab());
-
-        addAndExpand(tabSheet);
+        add(
+                createHeader(sourceService),
+                createScroller()
+        );
     }
 
-    private VerticalLayout buildGeneralTab() {
-        FormLayout form = new FormLayout();
+    /**
+     * Page header with drawer toggle, title, and source viewer button.
+     */
+    private ViewHeader createHeader(SourceService sourceService) {
+        DrawerToggle toggle = new DrawerToggle();
+        toggle.addThemeVariants(ButtonVariant.TERTIARY);
 
+        H1 title = new H1("Settings");
+
+        Button viewSource = new Button(Lucide.CODE.create(), e -> new SourceViewerDialog(SettingsView.class, sourceService).open());
+        viewSource.addThemeVariants(ButtonVariant.TERTIARY);
+        viewSource.setAriaLabel("View source");
+        viewSource.setTooltipText("View source");
+
+        return new ViewHeader(toggle, title, viewSource);
+    }
+
+    /**
+     * Scroller containing a tab bar wired to show/hide the settings panels.
+     */
+    private Scroller createScroller() {
+        Div general = buildGeneralTab();
+        Div notifications = buildNotificationsTab();
+        Div security = buildSecurityTab();
+        Div integrations = buildIntegrationsTab();
+
+        Tab generalTab = new Tab("General");
+        Tab notificationsTab = new Tab("Notifications");
+        Tab securityTab = new Tab("Security");
+        Tab integrationsTab = new Tab("Integrations");
+
+        notifications.setVisible(false);
+        security.setVisible(false);
+        integrations.setVisible(false);
+
+        Tabs tabs = new Tabs(generalTab, notificationsTab, securityTab, integrationsTab);
+        tabs.addClassNames(Width.FIT);
+        tabs.addSelectedChangeListener(e -> {
+            general.setVisible(e.getSelectedTab() == generalTab);
+            notifications.setVisible(e.getSelectedTab() == notificationsTab);
+            security.setVisible(e.getSelectedTab() == securityTab);
+            integrations.setVisible(e.getSelectedTab() == integrationsTab);
+        });
+
+        Scroller scroller = new Scroller();
+        scroller.getElement().appendChild(
+                tabs.getElement(),
+                general.getElement(),
+                notifications.getElement(),
+                security.getElement(),
+                integrations.getElement()
+        );
+        scroller.addThemeVariants(ScrollerVariant.OVERFLOW_INDICATORS);
+        return scroller;
+    }
+
+    /**
+     * Tab content for general organization settings.
+     */
+    private Div buildGeneralTab() {
         TextField orgName = new TextField("Organization Name");
         orgName.setValue("Acme Corporation");
 
@@ -72,33 +108,32 @@ public class SettingsView extends VerticalLayout {
         EmailField supportEmail = new EmailField("Support Email");
         supportEmail.setValue("support@acme.example.com");
 
-        Select<String> timezone = new Select<>();
-        timezone.setLabel("Timezone");
+        Select<String> timezone = new Select<>("Timezone");
         timezone.setItems("UTC", "US/Eastern", "US/Pacific", "Europe/London", "Europe/Berlin", "Asia/Tokyo");
         timezone.setValue("UTC");
 
-        Select<String> language = new Select<>();
-        language.setLabel("Language");
+        Select<String> language = new Select<>("Language");
         language.setItems("English", "Finnish", "German", "French", "Spanish");
         language.setValue("English");
 
-        form.add(orgName, orgUrl, supportEmail, timezone, language);
+        FormLayout form = new FormLayout(orgName, orgUrl, supportEmail, timezone, language);
+        form.setAutoResponsive(true);
+        form.setColumnWidth("16rem");
+        form.setExpandFields(true);
 
-        Button save = new Button("Save Changes");
-        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        save.addClickListener(e -> {
-            Notification n = Notification.show("General settings saved", 3000, Notification.Position.BOTTOM_END);
-            n.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-        });
+        Button save = new Button("Save Changes", e -> notify("General settings saved", NotificationVariant.SUCCESS));
+        save.addThemeVariants(ButtonVariant.PRIMARY);
 
-        VerticalLayout layout = new VerticalLayout(form, save);
-        layout.setPadding(false);
+        Div layout = new Div(form, save);
+        layout.addClassNames(AlignItems.START, Display.FLEX, FlexDirection.COLUMN, Gap.LARGE, Padding.Horizontal.XSMALL, Padding.Vertical.LARGE);
         return layout;
     }
 
-    private VerticalLayout buildNotificationsTab() {
-        FormLayout form = new FormLayout();
-        form.add(
+    /**
+     * Tab content for notification email preferences.
+     */
+    private Div buildNotificationsTab() {
+        FormLayout form = new FormLayout(
                 new Checkbox("Email me on new orders", true),
                 new Checkbox("Email me on failed payments", true),
                 new Checkbox("Weekly usage digest", true),
@@ -106,96 +141,99 @@ public class SettingsView extends VerticalLayout {
                 new Checkbox("Product updates and announcements", false),
                 new Checkbox("Marketing emails", false)
         );
+        form.setAutoResponsive(true);
+        form.setExpandColumns(true);
+        form.setExpandFields(true);
 
-        Button save = new Button("Save Preferences");
-        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        save.addClickListener(e -> {
-            Notification n = Notification.show("Notification preferences saved", 3000, Notification.Position.BOTTOM_END);
-            n.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-        });
+        Button save = new Button("Save Preferences", e -> notify("Notification preferences saved", NotificationVariant.SUCCESS));
+        save.addThemeVariants(ButtonVariant.PRIMARY);
 
-        VerticalLayout layout = new VerticalLayout(form, save);
-        layout.setPadding(false);
+        Div layout = new Div(form, save);
+        layout.addClassNames(AlignItems.START, Display.FLEX, FlexDirection.COLUMN, Gap.LARGE, Padding.Horizontal.XSMALL, Padding.Vertical.LARGE);
         return layout;
     }
 
-    private VerticalLayout buildSecurityTab() {
-        FormLayout form = new FormLayout();
+    /**
+     * Tab content for password change and two-factor authentication.
+     */
+    private Div buildSecurityTab() {
+        PasswordField currentPassword = new PasswordField("Current Password");
+        PasswordField newPassword = new PasswordField("New Password");
+        PasswordField confirmPassword = new PasswordField("Confirm New Password");
 
-        PasswordField currentPwd = new PasswordField("Current Password");
-        PasswordField newPwd = new PasswordField("New Password");
-        PasswordField confirmPwd = new PasswordField("Confirm New Password");
+        FormLayout form = new FormLayout(currentPassword, newPassword, confirmPassword);
+        form.setAutoResponsive(true);
+        form.setColumnWidth("16rem");
+        form.setExpandFields(true);
 
-        form.add(currentPwd, newPwd, confirmPwd);
+        Button changePassword = new Button("Change Password", e -> notify("Password change is not implemented in this demo"));
+        changePassword.addClassNames(Margin.Top.LARGE);
+        changePassword.addThemeVariants(ButtonVariant.PRIMARY);
 
-        Button changePassword = new Button("Change Password");
-        changePassword.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        changePassword.addClickListener(e -> {
-            Notification n = Notification.show("Password change is not implemented in this demo", 3000, Notification.Position.BOTTOM_END);
-            n.addThemeVariants(NotificationVariant.LUMO_PRIMARY);
-        });
+        Hr hr = new Hr();
+        hr.addClassNames(Margin.Vertical.LARGE);
 
-        Hr separator = new Hr();
+        H2 twoFactorHeading = new H2("Two-Factor Authentication");
+        twoFactorHeading.addClassNames(FontSize.LARGE);
 
-        H4 twoFactor = new H4("Two-Factor Authentication");
-        Paragraph twoFactorDesc = new Paragraph("Add an extra layer of security to your account.");
-        Button enableTwoFactor = new Button("Enable 2FA");
-        enableTwoFactor.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
-        enableTwoFactor.addClickListener(e -> {
-            Notification n = Notification.show("2FA setup is not implemented in this demo", 3000, Notification.Position.BOTTOM_END);
-            n.addThemeVariants(NotificationVariant.LUMO_PRIMARY);
-        });
+        Paragraph twoFactorDescription = new Paragraph("Add an extra layer of security to your account.");
+        twoFactorDescription.addClassNames(Color.SECONDARY, FontSize.SMALL, Margin.ZERO);
 
-        VerticalLayout layout = new VerticalLayout(form, changePassword, separator, twoFactor, twoFactorDesc, enableTwoFactor);
-        layout.setPadding(false);
+        Button enableTwoFactor = new Button("Enable 2FA", e -> notify("2FA setup is not implemented in this demo"));
+        enableTwoFactor.addClassNames(Margin.Top.LARGE);
+
+        Div layout = new Div(form, changePassword, hr, twoFactorHeading, twoFactorDescription, enableTwoFactor);
+        layout.addClassNames(AlignItems.START, Display.FLEX, FlexDirection.COLUMN, Padding.Horizontal.XSMALL, Padding.Vertical.LARGE);
         return layout;
     }
 
-    private VerticalLayout buildIntegrationsTab() {
-        VerticalLayout layout = new VerticalLayout();
-        layout.setPadding(false);
+    /**
+     * Tab content listing available third-party integrations.
+     */
+    private Div buildIntegrationsTab() {
+        Div grid = new Div();
+        grid.addClassNames(Display.GRID, Gap.SMALL, Grid.COLUMNS_AUTO_FIT_MIN_320, Padding.Horizontal.XSMALL, Padding.Vertical.LARGE);
 
         for (SampleData.Integration integration : SampleData.integrations()) {
-            Div card = new Div();
-            card.addClassName("integration-card");
-
-            Div info = new Div();
-            info.addClassName("integration-info");
-            Span name = new Span(integration.name());
-            name.getStyle().set("font-weight", "600").set("display", "block");
-            Span desc = new Span(integration.description());
-            desc.getStyle().set("font-size", "var(--aura-font-size-s)").set("color", "var(--vaadin-text-color-secondary)");
-            info.add(name, desc);
-
-            HorizontalLayout actions = new HorizontalLayout();
-            actions.addClassName("integration-actions");
-            actions.setAlignItems(Alignment.CENTER);
-            actions.setSpacing(false);
-            actions.getStyle().set("gap", "var(--vaadin-gap-s)");
-
-            Checkbox enabled = new Checkbox();
-            enabled.setAriaLabel("Enable " + integration.name());
-            enabled.setValue(integration.enabled());
-            enabled.addValueChangeListener(ev -> {
-                String msg = ev.getValue()
-                        ? integration.name() + " enabled"
-                        : integration.name() + " disabled";
-                Notification n = Notification.show(msg, 2000, Notification.Position.BOTTOM_END);
-                n.addThemeVariants(NotificationVariant.LUMO_PRIMARY);
-            });
-
-            Button connect = new Button("Configure");
-            connect.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_TERTIARY);
-            connect.addClickListener(e -> {
-                Notification n = Notification.show("Integration configuration is not yet implemented", 3000, Notification.Position.BOTTOM_END);
-                n.addThemeVariants(NotificationVariant.LUMO_PRIMARY);
-            });
-
-            actions.add(enabled, connect);
-            card.add(info, actions);
-            layout.add(card);
+            grid.add(createIntegrationCard(integration));
         }
+        return grid;
+    }
 
-        return layout;
+    /**
+     * Card representing a single third-party integration with a toggle and configure button.
+     */
+    private Card createIntegrationCard(SampleData.Integration integration) {
+        Span name = new Span(integration.name());
+        name.addClassNames(FontWeight.SEMIBOLD);
+
+        Span description = new Span(integration.description());
+        description.addClassNames(Color.SECONDARY, FontSize.SMALL);
+
+        Div info = new Div(name, description);
+        info.addClassNames(Display.FLEX, Flex.GROW, FlexDirection.COLUMN);
+
+        Checkbox checkbox = new Checkbox(integration.enabled());
+        checkbox.addValueChangeListener(ev -> notify(
+                ev.getValue() ? integration.name() + " enabled" : integration.name() + " disabled"));
+        checkbox.setAriaLabel("Enable " + integration.name());
+        checkbox.setTooltipText("Enable " + integration.name());
+
+        Button configure = new Button("Configure", e -> notify("Integration configuration is not yet implemented"));
+
+        Div row = new Div(checkbox, info, configure);
+        row.addClassNames(Display.FLEX, Gap.SMALL);
+
+        Card card = new Card();
+        card.add(row);
+        return card;
+    }
+
+    /**
+     * Shows a toast notification.
+     */
+    private void notify(String message, NotificationVariant... variants) {
+        Notification notification = Notification.show(message);
+        notification.addThemeVariants(variants);
     }
 }

@@ -37,11 +37,19 @@ import static com.vaadin.demo.ui.util.Tailwind.*;
 public class DashboardView extends View {
 
     public DashboardView(SourceService sourceService) {
-        add(createHeader(sourceService));
+        add(
+                createHeader(sourceService),
+                createContent()
+        );
+    }
 
+    /**
+     * Main content area containing the stat cards and recent orders card.
+     */
+    private Div createContent() {
         Div content = new Div(createStatCards(), createOrdersCard());
         content.addClassNames(Display.FLEX, FlexDirection.COLUMN, Gap.LARGE, Overflow.HIDDEN, Padding.Bottom.LARGE, Padding.Horizontal.LARGE);
-        add(content);
+        return content;
     }
 
     /**
@@ -92,7 +100,7 @@ public class DashboardView extends View {
      */
     private H2 createOrdersHeading() {
         H2 heading = new H2("Recent Orders");
-        heading.addClassNames(FontWeight.SEMIBOLD, FontSize.XLARGE);
+        heading.addClassNames(FontSize.XLARGE);
         return heading;
     }
 
@@ -161,6 +169,9 @@ public class DashboardView extends View {
         return badge;
     }
 
+    /**
+     * Shows a toast notification at the bottom-end of the screen.
+     */
     private void notify(String message, NotificationVariant... variants) {
         Notification notification = Notification.show(message, 3000, Notification.Position.BOTTOM_END);
         notification.addThemeVariants(variants);

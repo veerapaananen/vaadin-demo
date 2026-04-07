@@ -119,14 +119,20 @@ public class ComponentsView extends View {
             new Person("Tina Nelson", "tina@example.com", "Active")
     );
 
-    // ── Individual cards ──────────────────────────────────────────────────
-
     public ComponentsView(SourceService sourceService) {
-        add(createHeader(sourceService));
+        add(
+                createHeader(sourceService),
+                createScroller()
+        );
+    }
 
-        Scroller scroller = new Scroller(createGrid());
+    /**
+     * Scroller wrapping the component showcase card grid.
+     */
+    private Scroller createScroller() {
+        Scroller scroller = new Scroller(createCardGrid());
         scroller.addThemeVariants(ScrollerVariant.OVERFLOW_INDICATORS);
-        add(scroller);
+        return scroller;
     }
 
     /**
@@ -149,9 +155,9 @@ public class ComponentsView extends View {
     /**
      * Grid of component showcase cards.
      */
-    private Div createGrid() {
+    private Div createCardGrid() {
         Div grid = new Div();
-        grid.addClassNames(Display.GRID, Tailwind.Grid.AUTO_ROWS_MIN_200, Tailwind.Grid.COLUMNS_AUTO_FIT_MIN_200, Tailwind.Grid.FLOW_DENSE, Gap.SMALL, Padding.Bottom.LARGE, Padding.Horizontal.XSMALL);
+        grid.addClassNames(Display.GRID, Tailwind.Grid.AUTO_ROWS_MIN_200, Tailwind.Grid.COLUMNS_AUTO_FIT_MIN_256, Tailwind.Grid.FLOW_DENSE, Gap.SMALL, Padding.Bottom.LARGE, Padding.Horizontal.XSMALL);
         grid.add(
                 createButtonsCard(),
                 createNotificationCard(),
@@ -176,6 +182,11 @@ public class ComponentsView extends View {
         return grid;
     }
 
+    // ── Individual cards ──────────────────────────────────────────────────
+
+    /**
+     * Card showcasing button variants: primary, default, tertiary, icon-only, success, and error.
+     */
     private Card createButtonsCard() {
         Button primary = new Button("Primary");
         primary.addThemeVariants(ButtonVariant.PRIMARY);
@@ -205,6 +216,9 @@ public class ComponentsView extends View {
         return card;
     }
 
+    /**
+     * Card demonstrating a rich notification with an inline card and action buttons.
+     */
     private Card createNotificationCard() {
         Button button = new Button("Show Notification", Lucide.BELL_RING.create(), e -> {
             Notification notification = new Notification();
@@ -235,6 +249,9 @@ public class ComponentsView extends View {
         return card;
     }
 
+    /**
+     * Card showcasing badge variants in both text and icon-only styles, plain and filled.
+     */
     private Card createBadgesCard() {
         Div badges = new Div();
         badges.addClassNames(AlignItems.CENTER, Display.FLEX, Height.FULL, JustifyContent.CENTER, Gap.SMALL);
@@ -250,6 +267,9 @@ public class ComponentsView extends View {
         return card;
     }
 
+    /**
+     * Column of text badges (default + success/error/warning) with optional extra variants applied.
+     */
     private Div createBadges(BadgeVariant... variants) {
         Div badges = new Div();
         badges.addClassNames(Display.FLEX, FlexDirection.COLUMN, Gap.SMALL);
@@ -268,6 +288,9 @@ public class ComponentsView extends View {
         return badges;
     }
 
+    /**
+     * Column of icon-only badges (default + success/error/warning) with optional extra variants applied.
+     */
     private Div createIconBadges(BadgeVariant... variants) {
         Div badges = new Div();
         badges.addClassNames(Display.FLEX, FlexDirection.COLUMN, Gap.SMALL);
@@ -287,6 +310,9 @@ public class ComponentsView extends View {
         return badges;
     }
 
+    /**
+     * Card showcasing a radio button group.
+     */
     private Card createRadioButtonGroupCard() {
         RadioButtonGroup<String> radioButtonGroup = new RadioButtonGroup<>("Options");
         radioButtonGroup.setItems("Option 1", "Option 2", "Option 3");
@@ -300,6 +326,9 @@ public class ComponentsView extends View {
         return card;
     }
 
+    /**
+     * Card showcasing a side navigation with nested items and a badge counter.
+     */
     private Card createSideNavCard() {
         SideNav nav = new SideNav();
         nav.addThemeVariants(SideNavVariant.AURA_FILLED);
@@ -344,6 +373,9 @@ public class ComponentsView extends View {
         return new SideNavItem(label, view, icon.create());
     }
 
+    /**
+     * Card showcasing a deeply nested menu bar with separators, badges, and checkable items.
+     */
     private Card createMenuBarCard() {
         MenuBar menuBar = new MenuBar();
         MenuItem actions = menuBar.addItem("Actions");
@@ -384,6 +416,9 @@ public class ComponentsView extends View {
         return card;
     }
 
+    /**
+     * Card showcasing tabs with a badge counter on the first tab.
+     */
     private Card createTabsCard() {
         Badge badge = new Badge();
         badge.setNumber(2);
@@ -403,6 +438,9 @@ public class ComponentsView extends View {
         return card;
     }
 
+    /**
+     * Card with a button that opens a confirm dialog.
+     */
     private Card createDialogCard() {
         Button button = new Button("Open Dialog", e -> {
             ConfirmDialog dialog = new ConfirmDialog();
@@ -423,6 +461,9 @@ public class ComponentsView extends View {
         return card;
     }
 
+    /**
+     * Card showcasing a date-time picker.
+     */
     private Card createDateTimePickerCard() {
         DateTimePicker dateTimePicker = new DateTimePicker();
         dateTimePicker.setValue(LocalDateTime.now());
@@ -437,6 +478,9 @@ public class ComponentsView extends View {
         return card;
     }
 
+    /**
+     * Card showcasing a combo box pre-filled with a country list.
+     */
     private Card createComboBoxCard() {
         ComboBox<String> comboBox = new ComboBox<>("Country");
         comboBox.setItems(COUNTRIES);
@@ -450,6 +494,9 @@ public class ComponentsView extends View {
         return card;
     }
 
+    /**
+     * Card showcasing a checkbox group.
+     */
     private Card createCheckboxGroupCard() {
         CheckboxGroup<String> checkboxGroup = new CheckboxGroup<>("Options");
         checkboxGroup.setItems("Option 1", "Option 2", "Option 3");
@@ -463,6 +510,9 @@ public class ComponentsView extends View {
         return card;
     }
 
+    /**
+     * Card showcasing the full typography size scale.
+     */
     private Card createTypographyCard() {
         String[][] sizes = {
                 {FontSize.XLARGE, LineHeight.XLARGE},
@@ -485,6 +535,9 @@ public class ComponentsView extends View {
         return card;
     }
 
+    /**
+     * Card showcasing a data grid with multi-row selection and a status badge column.
+     */
     private Card createGridCard() {
         Grid<Person> grid = new Grid<>(Person.class, false);
         grid.addThemeVariants(GridVariant.NO_BORDER);
@@ -513,9 +566,11 @@ public class ComponentsView extends View {
         return card;
     }
 
+    /**
+     * Card showcasing a select field.
+     */
     private Card createSelectCard() {
-        Select<String> select = new Select<>();
-        select.setLabel("Options");
+        Select<String> select = new Select<>("Options");
         select.setItems("Option 1", "Option 2", "Option 3");
         select.setValue("Option 1");
 
@@ -527,6 +582,9 @@ public class ComponentsView extends View {
         return card;
     }
 
+    /**
+     * Card showcasing an avatar group.
+     */
     private Card createAvatarGroupCard() {
         String[] names = {
                 "Alice Johnson", "Bob Smith", "Carol White", "David Brown", "Eva Martinez",
@@ -549,6 +607,9 @@ public class ComponentsView extends View {
         return card;
     }
 
+    /**
+     * Card showcasing a message list with a message input.
+     */
     private Card createMessageListCard() {
         MessageListItem matt = new MessageListItem(
                 "Nature does not hurry, yet everything gets accomplished.",
@@ -575,6 +636,9 @@ public class ComponentsView extends View {
         return card;
     }
 
+    /**
+     * Card showcasing a progress bar.
+     */
     private Card createProgressBarCard() {
         ProgressBar progressBar = new ProgressBar(0, 100, 50);
 
@@ -586,6 +650,9 @@ public class ComponentsView extends View {
         return card;
     }
 
+    /**
+     * Card showcasing a multi-select combo box pre-filled with a country list.
+     */
     private Card createMultiSelectComboBoxCard() {
         MultiSelectComboBox<String> comboBox = new MultiSelectComboBox<>("Country");
         comboBox.setItems(COUNTRIES);
@@ -599,6 +666,9 @@ public class ComponentsView extends View {
         return card;
     }
 
+    /**
+     * Card showcasing a text field with a clear button and icon prefix.
+     */
     private Card createTextFieldCard() {
         TextField textField = new TextField();
         textField.setClearButtonVisible(true);

@@ -6,20 +6,11 @@ import com.vaadin.demo.ui.component.SourceViewerDialog;
 import com.vaadin.demo.ui.component.View;
 import com.vaadin.demo.ui.component.ViewHeader;
 import com.vaadin.demo.ui.util.Lucide;
-import com.vaadin.demo.ui.util.Tailwind.AlignItems;
-import com.vaadin.demo.ui.util.Tailwind.Border;
-import com.vaadin.demo.ui.util.Tailwind.Color;
-import com.vaadin.demo.ui.util.Tailwind.Display;
-import com.vaadin.demo.ui.util.Tailwind.FlexDirection;
-import com.vaadin.demo.ui.util.Tailwind.FontSize;
-import com.vaadin.demo.ui.util.Tailwind.FontWeight;
-import com.vaadin.demo.ui.util.Tailwind.Gap;
-import com.vaadin.demo.ui.util.Tailwind.Overflow;
-import com.vaadin.demo.ui.util.Tailwind.Padding;
-import com.vaadin.demo.ui.util.Tailwind.Width;
+import com.vaadin.demo.ui.util.Tailwind.*;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
+import com.vaadin.flow.component.avatar.AvatarVariant;
 import com.vaadin.flow.component.badge.Badge;
 import com.vaadin.flow.component.badge.BadgeVariant;
 import com.vaadin.flow.component.button.Button;
@@ -37,21 +28,29 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.provider.ListDataView;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
-import static com.vaadin.demo.ui.util.Tailwind.*;
 
 @Route("users")
 @PageTitle("Users — Vaadin Demo")
 public class UsersView extends View {
 
     public UsersView(SourceService sourceService) {
-        add(createHeader(sourceService));
+        add(
+                createHeader(sourceService),
+                createContent()
+        );
+    }
 
+    /**
+     * Main content area containing the users card.
+     */
+    private Div createContent() {
         Div content = new Div(createUsersCard());
         content.addClassNames(Display.FLEX, Overflow.HIDDEN, Padding.Bottom.LARGE, Padding.Horizontal.LARGE);
-        add(content);
+        return content;
     }
 
     /**
@@ -63,9 +62,8 @@ public class UsersView extends View {
 
         H1 title = new H1("Users");
 
-        Button inviteUser = new Button("Invite User", Lucide.MAIL_PLUS.create());
+        Button inviteUser = new Button("Invite User", Lucide.MAIL_PLUS.create(), e -> notify("Invite not yet implemented"));
         inviteUser.addThemeVariants(ButtonVariant.PRIMARY);
-        inviteUser.addClickListener(e -> notify("Invitation sent — feature not yet implemented in this demo", NotificationVariant.LUMO_PRIMARY));
 
         Button viewSource = new Button(Lucide.CODE.create(), e -> new SourceViewerDialog(UsersView.class, sourceService).open());
         viewSource.addThemeVariants(ButtonVariant.TERTIARY);
@@ -94,14 +92,14 @@ public class UsersView extends View {
         grid.setHeightFull();
 
         var nameCol = grid.addComponentColumn(user -> {
-            Avatar avatar = new Avatar(user.name());
-            avatar.setAbbreviation(user.initials());
-            avatar.getStyle().set("--vaadin-avatar-size", "2rem");
+                    Avatar avatar = new Avatar(user.name());
+                    avatar.addThemeVariants(AvatarVariant.LARGE);
+                    avatar.setAbbreviation(user.initials());
 
-            Div div = new Div(avatar, new Text(user.name()));
-            div.addClassNames(AlignItems.CENTER, Display.FLEX, FontWeight.MEDIUM, Gap.SMALL);
-            return div;
-        }).setComparator(u -> u.name())
+                    Div div = new Div(avatar, new Text(user.name()));
+                    div.addClassNames(AlignItems.CENTER, Display.FLEX, FontWeight.MEDIUM, Gap.SMALL);
+                    return div;
+                }).setComparator(u -> u.name())
                 .setHeader("Name")
                 .setResizable(true);
 
@@ -123,18 +121,32 @@ public class UsersView extends View {
                 .setSortable(true);
 
         var actionsCol = grid.addComponentColumn(user -> {
-            Button edit = new Button(Lucide.SQUARE_PEN.create(), e -> openUserDialog(user));
-            edit.addThemeVariants(ButtonVariant.TERTIARY);
-            edit.setAriaLabel("Edit");
-            edit.setTooltipText("Edit");
-            return edit;
-        })
+                    Button edit = new Button(Lucide.SQUARE_PEN.create(), e -> openUserDialog(user));
+                    edit.addThemeVariants(ButtonVariant.TERTIARY);
+                    edit.setAriaLabel("Edit");
+                    edit.setTooltipText("Edit");
+                    return edit;
+                })
                 .setAutoWidth(true)
                 .setFlexGrow(0);
 
         var dataView = grid.setItems(SampleData.users());
 
-        // Header row filters
+        appendFilterRow(grid, dataView, nameCol, emailCol, roleCol, lastLoginCol, actionsCol);
+        return grid;
+    }
+
+    /**
+     * Appends a header filter row to the grid wired to the given data view.
+     */
+    private void appendFilterRow(
+            Grid<SampleData.User> grid,
+            ListDataView<SampleData.User, ?> dataView,
+            Grid.Column<SampleData.User> nameCol,
+            Grid.Column<SampleData.User> emailCol,
+            Grid.Column<SampleData.User> roleCol,
+            Grid.Column<SampleData.User> lastLoginCol,
+            Grid.Column<SampleData.User> actionsCol) {
         HeaderRow filterRow = grid.appendHeaderRow();
 
         TextField nameFilter = new TextField();
@@ -160,14 +172,12 @@ public class UsersView extends View {
 
         Runnable applyFilter = () -> dataView.setFilter(u ->
                 (nameFilter.getValue().isBlank() || u.name().toLowerCase().contains(nameFilter.getValue().toLowerCase())) &&
-                (emailFilter.getValue().isBlank() || u.email().toLowerCase().contains(emailFilter.getValue().toLowerCase())) &&
-                (roleFilter.getValue() == null || roleFilter.getValue().isBlank() || roleFilter.getValue().equals(u.role())));
+                        (emailFilter.getValue().isBlank() || u.email().toLowerCase().contains(emailFilter.getValue().toLowerCase())) &&
+                        (roleFilter.getValue() == null || roleFilter.getValue().isBlank() || roleFilter.getValue().equals(u.role())));
 
         nameFilter.addValueChangeListener(e -> applyFilter.run());
         emailFilter.addValueChangeListener(e -> applyFilter.run());
         roleFilter.addValueChangeListener(e -> applyFilter.run());
-
-        return grid;
     }
 
     /**
@@ -176,8 +186,8 @@ public class UsersView extends View {
     private Badge createRoleBadge(String role) {
         Badge badge = new Badge(role);
         switch (role) {
-            case "Admin"     -> badge.addThemeVariants(BadgeVariant.ERROR);
-            case "Billing"   -> badge.addThemeVariants(BadgeVariant.CONTRAST);
+            case "Admin" -> badge.addThemeVariants(BadgeVariant.ERROR);
+            case "Billing" -> badge.addThemeVariants(BadgeVariant.CONTRAST);
             case "Developer" -> badge.addThemeVariants(BadgeVariant.SUCCESS);
         }
         return badge;
@@ -187,27 +197,9 @@ public class UsersView extends View {
      * Opens a dialog to edit an existing user's role.
      */
     private void openUserDialog(SampleData.User user) {
-        Dialog dialog = new Dialog();
-        dialog.setHeaderTitle("Edit User");
-        dialog.setWidth("400px");
+        Div avatarRow = createAvatarRow(user);
 
-        Avatar avatar = new Avatar(user.name());
-        avatar.setAbbreviation(user.initials());
-        avatar.getStyle().set("--vaadin-avatar-size", "3.5rem");
-
-        H3 nameSpan = new H3(user.name());
-
-        Span emailSpan = new Span(user.email());
-        emailSpan.addClassNames(Color.SECONDARY, FontSize.SMALL);
-
-        Div userInfo = new Div(nameSpan, emailSpan);
-        userInfo.addClassNames(Display.FLEX, FlexDirection.COLUMN);
-
-        Div avatarRow = new Div(avatar, userInfo);
-        avatarRow.addClassNames(AlignItems.CENTER, Border.BOTTOM, Display.FLEX, Gap.MEDIUM, Padding.Bottom.LARGE, Width.FULL);
-
-        Select<String> role = new Select<>();
-        role.setLabel("Role");
+        Select<String> role = new Select<>("Role");
         role.setItems("Admin", "Billing", "Developer", "Viewer");
         role.setValue(user.role());
 
@@ -216,7 +208,10 @@ public class UsersView extends View {
 
         Div content = new Div(avatarRow, role, lastLogin);
         content.addClassNames(Display.FLEX, FlexDirection.COLUMN, Gap.LARGE);
-        dialog.add(content);
+
+        Dialog dialog = new Dialog(content);
+        dialog.setHeaderTitle("Edit User");
+        dialog.setWidth("400px");
 
         Button save = new Button("Save Changes", e -> {
             dialog.close();
@@ -229,6 +224,28 @@ public class UsersView extends View {
 
         dialog.getFooter().add(cancel, save);
         dialog.open();
+    }
+
+    /**
+     * Avatar, name, and email row shown at the top of the user dialog.
+     */
+    private Div createAvatarRow(SampleData.User user) {
+        Avatar avatar = new Avatar(user.name());
+        avatar.addThemeVariants(AvatarVariant.XLARGE);
+        avatar.setAbbreviation(user.initials());
+
+        H3 nameSpan = new H3(user.name());
+
+        Span emailSpan = new Span(user.email());
+        emailSpan.addClassNames(Color.SECONDARY, FontSize.SMALL);
+
+        Div userInfo = new Div(nameSpan, emailSpan);
+        userInfo.addClassNames(Display.FLEX, FlexDirection.COLUMN);
+
+        Div avatarRow = new Div(avatar, userInfo);
+        avatarRow.addClassNames(AlignItems.CENTER, Border.BOTTOM, BorderColor.SECONDARY, Display.FLEX, Gap.MEDIUM,
+                Padding.Bottom.LARGE, Width.FULL);
+        return avatarRow;
     }
 
     /**
