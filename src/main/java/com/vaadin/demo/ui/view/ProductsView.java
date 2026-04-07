@@ -20,7 +20,6 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.select.Select;
@@ -61,7 +60,7 @@ public class ProductsView extends View {
 
         H1 title = new H1("Products");
 
-        Button addProduct = new Button("Add Product", VaadinIcon.PLUS.create());
+        Button addProduct = new Button("Add Product", Lucide.PLUS.create());
         addProduct.addThemeVariants(ButtonVariant.PRIMARY);
         addProduct.addClickListener(e -> openProductDialog(null));
 

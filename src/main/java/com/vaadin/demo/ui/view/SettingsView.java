@@ -192,7 +192,7 @@ public class SettingsView extends View {
      */
     private Div buildIntegrationsTab() {
         Div grid = new Div();
-        grid.addClassNames(Display.GRID, Gap.SMALL, Grid.COLUMNS_AUTO_FIT_MIN_320, Padding.Horizontal.XSMALL, Padding.Vertical.LARGE);
+        grid.addClassNames(Display.GRID, Gap.SMALL, Grid.COLUMNS_AUTO_FIT_MIN_XS, Padding.Horizontal.XSMALL, Padding.Vertical.LARGE);
 
         for (SampleData.Integration integration : SampleData.integrations()) {
             grid.add(createIntegrationCard(integration));

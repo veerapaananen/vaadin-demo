@@ -36,6 +36,8 @@ export default {
         m: 'var(--vaadin-padding-m)',
         l: 'var(--vaadin-padding-l)',
         xl: 'var(--vaadin-padding-xl)',
+        'block-container':  'var(--vaadin-padding-block-container)',
+        'inline-container': 'var(--vaadin-padding-inline-container)',
       },
 
       // ─── Colors ───────────────────────────────────────────────────

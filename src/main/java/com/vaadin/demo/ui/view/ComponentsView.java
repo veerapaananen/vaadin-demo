@@ -157,7 +157,7 @@ public class ComponentsView extends View {
      */
     private Div createCardGrid() {
         Div grid = new Div();
-        grid.addClassNames(Display.GRID, Tailwind.Grid.AUTO_ROWS_MIN_200, Tailwind.Grid.COLUMNS_AUTO_FIT_MIN_256, Tailwind.Grid.FLOW_DENSE, Gap.SMALL, Padding.Bottom.LARGE, Padding.Horizontal.XSMALL);
+        grid.addClassNames(Display.GRID, Tailwind.Grid.AUTO_ROWS_MIN_200, Tailwind.Grid.COLUMNS_AUTO_FIT_MIN_3XS, Tailwind.Grid.FLOW_DENSE, Gap.SMALL, Padding.Bottom.LARGE, Padding.Horizontal.XSMALL);
         grid.add(
                 createButtonsCard(),
                 createNotificationCard(),

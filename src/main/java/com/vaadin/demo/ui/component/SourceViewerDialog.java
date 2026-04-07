@@ -1,30 +1,34 @@
 package com.vaadin.demo.ui.component;
 
 import com.vaadin.demo.service.SourceService;
+import com.vaadin.demo.ui.util.Lucide;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.flow.component.html.Code;
+import com.vaadin.flow.component.html.Pre;
+
+import static com.vaadin.demo.ui.util.Tailwind.*;
 
 public class SourceViewerDialog extends Dialog {
 
     public SourceViewerDialog(Class<?> viewClass, SourceService sourceService) {
-        setHeaderTitle(viewClass.getSimpleName() + ".java");
-        setWidth("900px");
-        setMaxWidth("95vw");
-        setHeight("82vh");
         setCloseOnEsc(true);
+        setHeaderTitle(viewClass.getSimpleName() + ".java");
+        setHeight("80vh");
+        setMaxWidth("90vw");
+        setWidth("900px");
 
         String source = sourceService.getSource(viewClass);
         String githubUrl = sourceService.getGitHubUrl(viewClass);
 
         // Close button in header top-right
-        Button closeButton = new Button(VaadinIcon.CLOSE.create(), e -> close());
-        closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON);
+        Button closeButton = new Button(Lucide.X.create(), e -> close());
+        closeButton.addThemeVariants(ButtonVariant.SMALL, ButtonVariant.TERTIARY);
         closeButton.setAriaLabel("Close");
+        closeButton.setTooltipText("Close");
         getHeader().add(closeButton);
 
         // Code block — Prism.js highlights it after render
@@ -33,20 +37,9 @@ public class SourceViewerDialog extends Dialog {
                 .replace("<", "&lt;")
                 .replace(">", "&gt;");
 
-        Div codeBlock = new Div();
-        codeBlock.getElement().setProperty("innerHTML",
-                "<pre class=\"source-code-pre language-java\"><code class=\"language-java\">"
-                        + escapedSource + "</code></pre>");
-        codeBlock.getStyle()
-                .set("overflow", "auto")
-                .set("flex", "1")
-                .set("min-height", "0");
-
-        VerticalLayout content = new VerticalLayout(codeBlock);
-        content.setSizeFull();
-        content.setPadding(false);
-        content.setSpacing(false);
-        add(content);
+        Code code = new Code(escapedSource);
+        Pre pre = new Pre(code);
+        add(pre);
 
         // Trigger Prism highlighting after dialog renders
         addOpenedChangeListener(e -> {
@@ -57,8 +50,13 @@ public class SourceViewerDialog extends Dialog {
         });
 
         // Footer: GitHub link with icon
-        Button gitHub = new Button("View on GitHub", VaadinIcon.EXTERNAL_LINK.create(), e -> UI.getCurrent().getPage().executeJs("window.open($0,'_blank')", githubUrl));
-        gitHub.addThemeVariants(ButtonVariant.PRIMARY);
+        Anchor gitHub = new Anchor(githubUrl, "View on GitHub");
+        gitHub.add(Lucide.SQUARE_ARROW_OUT_UP_RIGHT.create());
+        gitHub.addClassNames(AlignItems.CENTER, Background.ACCENT, Border.ALL, BorderColor.SECONDARY,
+                BorderRadius.MEDIUM, BoxShadow.SMALL, Color.ACCENT_CONTRAST, Display.FLEX, FontWeight.MEDIUM,
+                Gap.SMALL, Padding.Horizontal.MEDIUM, Padding.End.SMALL, Padding.Vertical.CONTAINER,
+                TextDecoration.NONE);
+        gitHub.setTarget("_blank");
         getFooter().add(gitHub);
     }
 }

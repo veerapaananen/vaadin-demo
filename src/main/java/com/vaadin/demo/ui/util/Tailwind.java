@@ -20,7 +20,26 @@ public final class Tailwind {
         }
     }
 
+    public static final class BorderRadius {
+        public static final String SMALL = "rounded-s";
+        public static final String MEDIUM = "rounded-m";
+        public static final String LARGE = "rounded-l";
+
+        private BorderRadius() {
+        }
+    }
+
+    public static final class BoxShadow {
+        public static final String XSMALL = "shadow-xs";
+        public static final String SMALL = "shadow-s";
+        public static final String MEDIUM = "shadow-m";
+
+        private BoxShadow() {
+        }
+    }
+
     public static final class Border {
+        public static final String ALL = "border";
         public static final String BOTTOM = "border-b";
 
         private Border() {
@@ -34,7 +53,15 @@ public final class Tailwind {
         }
     }
 
+    public static final class Background {
+        public static final String ACCENT = "bg-accent";
+
+        private Background() {
+        }
+    }
+
     public static final class Color {
+        public static final String ACCENT_CONTRAST = "text-accent-contrast";
         public static final String SECONDARY = "text-text-secondary";
 
         private Color() {
@@ -121,8 +148,8 @@ public final class Tailwind {
     public static final class Grid {
         public static final String AUTO_ROWS_MIN_200 = "auto-rows-[minmax(200px,auto)]";
         public static final String COLUMNS_3_AUTO = "grid-cols-[repeat(3,auto)]";
-        public static final String COLUMNS_AUTO_FIT_MIN_256 = "grid-cols-[repeat(auto-fit,minmax(256px,1fr))]";
-        public static final String COLUMNS_AUTO_FIT_MIN_320 = "grid-cols-[repeat(auto-fit,minmax(320px,1fr))]";
+        public static final String COLUMNS_AUTO_FIT_MIN_3XS = "grid-cols-[repeat(auto-fit,minmax(var(--container-3xs),1fr))]";
+        public static final String COLUMNS_AUTO_FIT_MIN_XS = "grid-cols-[repeat(auto-fit,minmax(var(--container-xs),1fr))]";
         public static final String FLOW_DENSE = "grid-flow-dense";
 
         private Grid() {
@@ -195,6 +222,7 @@ public final class Tailwind {
     }
 
     public static final class Overflow {
+        public static final String AUTO = "overflow-auto";
         public static final String HIDDEN = "overflow-hidden";
 
         private Overflow() {
@@ -215,20 +243,37 @@ public final class Tailwind {
             }
         }
 
+        public static final class End {
+            public static final String SMALL = "pe-s";
+
+            private End() {
+            }
+        }
+
         public static final class Horizontal {
-            public static final String LARGE = "px-l";
+            public static final String CONTAINER = "px-inline-container";
             public static final String XSMALL = "px-xs";
+            public static final String MEDIUM = "px-m";
+            public static final String LARGE = "px-l";
 
             private Horizontal() {
             }
         }
 
         public static final class Vertical {
+            public static final String CONTAINER = "py-block-container";
             public static final String LARGE = "py-l";
             public static final String XLARGE = "py-xl";
 
             private Vertical() {
             }
+        }
+    }
+
+    public static final class TextDecoration {
+        public static final String NONE = "no-underline";
+
+        private TextDecoration() {
         }
     }
 
