@@ -4,6 +4,7 @@ public final class Aura {
 
     public static final String ACCENT_PURPLE = "aura-accent-purple";
     public static final String ACCENT_RED = "aura-accent-red";
+    public static final String SURFACE_SOLID = "aura-surface-solid";
     public static final String VIEW = "aura-view";
     public static final String VIEW_FOOTER = "aura-view-footer";
     public static final String VIEW_HEADER = "aura-view-header";

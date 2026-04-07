@@ -5,6 +5,7 @@ import com.vaadin.demo.service.SourceService;
 import com.vaadin.demo.ui.component.SourceViewerDialog;
 import com.vaadin.demo.ui.component.View;
 import com.vaadin.demo.ui.component.ViewHeader;
+import com.vaadin.demo.ui.util.Aura;
 import com.vaadin.demo.ui.util.Lucide;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.badge.Badge;
@@ -89,7 +90,7 @@ public class DashboardView extends View {
     private Card createOrdersCard() {
         Card card = new Card();
         card.add(createOrdersGrid());
-        card.addClassNames(MinHeight.ZERO);
+        card.addClassNames(Aura.SURFACE_SOLID, MinHeight.ZERO);
         card.setHeader(createOrdersHeading());
         card.setHeaderSuffix(createOrdersMenuBar());
         return card;

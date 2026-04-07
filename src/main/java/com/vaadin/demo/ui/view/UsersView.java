@@ -7,6 +7,7 @@ import com.vaadin.demo.ui.component.View;
 import com.vaadin.demo.ui.component.ViewHeader;
 import com.vaadin.demo.ui.util.Lucide;
 import com.vaadin.demo.ui.util.Tailwind.*;
+import com.vaadin.demo.ui.util.Aura;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
@@ -79,7 +80,7 @@ public class UsersView extends View {
     private Card createUsersCard() {
         Card card = new Card();
         card.add(createUsersGrid());
-        card.addClassNames(Width.FULL);
+        card.addClassNames(Aura.SURFACE_SOLID, Width.FULL);
         return card;
     }
 

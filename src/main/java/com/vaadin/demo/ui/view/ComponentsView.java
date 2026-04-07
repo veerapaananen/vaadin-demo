@@ -562,7 +562,7 @@ public class ComponentsView extends View {
 
         Card card = new Card();
         card.add(grid);
-        card.addClassNames(GridColumn.SPAN_3, GridRow.SPAN_2);
+        card.addClassNames(Aura.SURFACE_SOLID, GridColumn.SPAN_3, GridRow.SPAN_2);
         return card;
     }
 

@@ -6,6 +6,7 @@ import com.vaadin.demo.ui.component.SourceViewerDialog;
 import com.vaadin.demo.ui.component.View;
 import com.vaadin.demo.ui.component.ViewHeader;
 import com.vaadin.demo.ui.util.Lucide;
+import com.vaadin.demo.ui.util.Aura;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.badge.Badge;
 import com.vaadin.flow.component.badge.BadgeVariant;
@@ -78,7 +79,7 @@ public class ProductsView extends View {
     private Card createProductsCard() {
         Card card = new Card();
         card.add(createProductsGrid());
-        card.addClassNames(Width.FULL);
+        card.addClassNames(Aura.SURFACE_SOLID, Width.FULL);
         return card;
     }
 
