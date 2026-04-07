@@ -9,6 +9,7 @@ import com.vaadin.demo.ui.util.Tailwind.Margin;
 import com.vaadin.demo.ui.util.Theme;
 import com.vaadin.demo.ui.view.*;
 import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
@@ -23,6 +24,7 @@ import com.vaadin.flow.component.menubar.MenuBarVariant;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.ScrollerVariant;
+import com.vaadin.flow.component.page.ColorScheme;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.component.sidenav.SideNavVariant;
@@ -128,8 +130,12 @@ public class MainLayout extends AppLayout {
         MenuItem light = createMenuItem(themeMenu, "Light", Lucide.SUN, true);
         MenuItem dark = createMenuItem(themeMenu, "Dark", Lucide.MOON, true);
 
-        List.of(system, light, dark).forEach(item ->
-                item.addClickListener(e -> List.of(system, light, dark).forEach(t -> t.setChecked(t == item))));
+        var items = List.of(system, light, dark);
+        items.forEach(item -> item.addClickListener(e -> {
+            var scheme = item == light ? ColorScheme.Value.LIGHT : item == dark ? ColorScheme.Value.DARK : null;
+            UI.getCurrent().getPage().setColorScheme(scheme);
+            items.forEach(t -> t.setChecked(t == item));
+        }));
     }
 
     private MenuItem createMenuItem(SubMenu subMenu, String label, Lucide icon) {
