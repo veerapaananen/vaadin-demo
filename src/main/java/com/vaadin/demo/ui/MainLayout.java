@@ -5,7 +5,6 @@ import com.vaadin.demo.ui.component.ViewHeader;
 import com.vaadin.demo.ui.component.ViewHeading;
 import com.vaadin.demo.ui.util.Lucide;
 import com.vaadin.demo.ui.util.Tailwind.Margin;
-import com.vaadin.demo.ui.util.Tailwind.Width;
 import com.vaadin.demo.ui.util.Theme;
 import com.vaadin.demo.ui.view.*;
 import com.vaadin.flow.component.Text;
