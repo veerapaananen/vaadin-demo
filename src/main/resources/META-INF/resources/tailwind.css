@@ -1,10 +1,3 @@
-:root {
-  --text-xs--line-height: var(--aura-line-height-xs);
-  --text-s--line-height:  var(--aura-line-height-s);
-  --text-m--line-height:  var(--aura-line-height-m);
-  --text-l--line-height:  var(--aura-line-height-l);
-  --text-xl--line-height: var(--aura-line-height-xl);
-}
 
 @theme {
   --spacing-xs: var(--vaadin-padding-xs);

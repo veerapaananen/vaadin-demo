@@ -5,11 +5,11 @@ export default {
     extend: {
       // ─── Typography ───────────────────────────────────────────────
       fontSize: {
-        xs: 'var(--aura-font-size-xs)',
-        s: 'var(--aura-font-size-s)',
-        m: 'var(--aura-font-size-m)',
-        l: 'var(--aura-font-size-l)',
-        xl: 'var(--aura-font-size-xl)',
+        xs: ['var(--aura-font-size-xs)', { lineHeight: 'var(--aura-line-height-xs)' }],
+        s:  ['var(--aura-font-size-s)',  { lineHeight: 'var(--aura-line-height-s)' }],
+        m:  ['var(--aura-font-size-m)',  { lineHeight: 'var(--aura-line-height-m)' }],
+        l:  ['var(--aura-font-size-l)',  { lineHeight: 'var(--aura-line-height-l)' }],
+        xl: ['var(--aura-font-size-xl)', { lineHeight: 'var(--aura-line-height-xl)' }],
       },
 
       lineHeight: {
