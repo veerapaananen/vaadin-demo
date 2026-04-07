@@ -4,7 +4,9 @@ import com.vaadin.demo.ui.component.ViewFooter;
 import com.vaadin.demo.ui.component.ViewHeader;
 import com.vaadin.demo.ui.component.ViewHeading;
 import com.vaadin.demo.ui.util.Lucide;
+import com.vaadin.demo.ui.util.Tailwind.JustifyContent;
 import com.vaadin.demo.ui.util.Tailwind.Margin;
+import com.vaadin.demo.ui.util.Tailwind.Width;
 import com.vaadin.demo.ui.util.Theme;
 import com.vaadin.demo.ui.view.*;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -54,7 +56,7 @@ public class MainLayout extends AppLayout {
         SideNav workspaceNav = new SideNav("Workspace");
         workspaceNav.addItem(new SideNavItem("Products", ProductsView.class, Lucide.BARCODE.create()));
         workspaceNav.addItem(new SideNavItem("Users", UsersView.class, Lucide.USERS.create()));
-        workspaceNav.addItem(new SideNavItem("Reports", ReportsView.class, Lucide.FILE_CHART_COLUMN_INCREASING.create()));
+        workspaceNav.addItem(placeholderItem("Reports", Lucide.FILE_CHART_COLUMN_INCREASING));
         workspaceNav.setCollapsible(true);
 
         SideNav growthNav = new SideNav("Growth");
@@ -78,6 +80,7 @@ public class MainLayout extends AppLayout {
         avatar.setAbbreviation("J");
 
         Button button = new Button("John Smith");
+        button.addClassNames(JustifyContent.START, Width.FULL);
         button.addThemeVariants(ButtonVariant.TERTIARY);
         button.setPrefixComponent(avatar);
 

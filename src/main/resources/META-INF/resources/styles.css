@@ -1,6 +1,7 @@
 @import "./avatar.css";
 @import "./aura-view.css";
 @import "./card.css";
+@import "./prism.css";
 @import "./tailwind.css";
 @config "./tailwind.config.js";
 

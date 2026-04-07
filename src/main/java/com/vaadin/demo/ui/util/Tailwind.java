@@ -55,8 +55,16 @@ public final class Tailwind {
 
     public static final class Background {
         public static final String ACCENT = "bg-accent";
+        public static final String CONTAINER = "bg-container";
 
         private Background() {
+        }
+    }
+
+    public static final class BoxSizing {
+        public static final String BORDER = "box-border";
+
+        private BoxSizing() {
         }
     }
 
@@ -158,6 +166,7 @@ public final class Tailwind {
 
     public static final class JustifyContent {
         public static final String CENTER = "justify-center";
+        public static final String START = "justify-start";
 
         private JustifyContent() {
         }
@@ -231,6 +240,7 @@ public final class Tailwind {
 
     public static final class Padding {
         public static final String ZERO = "p-0";
+        public static final String MEDIUM = "p-m";
         public static final String LARGE = "p-l";
 
         private Padding() {

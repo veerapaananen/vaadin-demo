@@ -42,6 +42,9 @@ export default {
 
       // ─── Colors ───────────────────────────────────────────────────
       colors: {
+        // Semantic surface defaults
+        container: 'var(--vaadin-background-container)',
+
         // Background / badge colors
         red: 'var(--aura-red)',
         orange: 'var(--aura-orange)',

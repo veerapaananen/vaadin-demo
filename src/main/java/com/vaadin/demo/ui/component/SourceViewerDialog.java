@@ -5,6 +5,7 @@ import com.vaadin.demo.ui.util.Lucide;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dependency.JavaScript;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Code;
@@ -12,6 +13,7 @@ import com.vaadin.flow.component.html.Pre;
 
 import static com.vaadin.demo.ui.util.Tailwind.*;
 
+@JavaScript("context://prism.js")
 public class SourceViewerDialog extends Dialog {
 
     public SourceViewerDialog(Class<?> viewClass, SourceService sourceService) {
@@ -32,20 +34,18 @@ public class SourceViewerDialog extends Dialog {
         getHeader().add(closeButton);
 
         // Code block — Prism.js highlights it after render
-        String escapedSource = source
-                .replace("&", "&amp;")
-                .replace("<", "&lt;")
-                .replace(">", "&gt;");
+        Code code = new Code(source);
+        code.addClassNames("language-java");
 
-        Code code = new Code(escapedSource);
         Pre pre = new Pre(code);
+        pre.addClassNames("language-java");
         add(pre);
 
         // Trigger Prism highlighting after dialog renders
         addOpenedChangeListener(e -> {
             if (e.isOpened()) {
                 UI.getCurrent().getPage().executeJs(
-                        "setTimeout(() => { if(window.Prism) Prism.highlightAll(); }, 50);");
+                        "setTimeout(() => Prism.highlightElement($0), 50);", code.getElement());
             }
         });
 
