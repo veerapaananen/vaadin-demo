@@ -21,18 +21,14 @@ public final class Tailwind {
     }
 
     public static final class BorderRadius {
-        public static final String SMALL = "rounded-s";
         public static final String MEDIUM = "rounded-m";
-        public static final String LARGE = "rounded-l";
 
         private BorderRadius() {
         }
     }
 
     public static final class BoxShadow {
-        public static final String XSMALL = "shadow-xs";
         public static final String SMALL = "shadow-s";
-        public static final String MEDIUM = "shadow-m";
 
         private BoxShadow() {
         }
@@ -55,16 +51,8 @@ public final class Tailwind {
 
     public static final class Background {
         public static final String ACCENT = "bg-accent";
-        public static final String CONTAINER = "bg-container";
 
         private Background() {
-        }
-    }
-
-    public static final class BoxSizing {
-        public static final String BORDER = "box-border";
-
-        private BoxSizing() {
         }
     }
 
@@ -143,11 +131,9 @@ public final class Tailwind {
     }
 
     public static final class Gap {
-        public static final String XSMALL = "gap-xs";
         public static final String SMALL = "gap-s";
         public static final String MEDIUM = "gap-m";
         public static final String LARGE = "gap-l";
-        public static final String XLARGE = "gap-xl";
 
         private Gap() {
         }
@@ -195,7 +181,6 @@ public final class Tailwind {
 
         public static final class Horizontal {
             public static final String XSMALL = "mx-xs";
-            public static final String MEDIUM = "mx-m";
 
             private Horizontal() {
             }
@@ -231,7 +216,6 @@ public final class Tailwind {
     }
 
     public static final class Overflow {
-        public static final String AUTO = "overflow-auto";
         public static final String HIDDEN = "overflow-hidden";
 
         private Overflow() {
@@ -239,9 +223,6 @@ public final class Tailwind {
     }
 
     public static final class Padding {
-        public static final String ZERO = "p-0";
-        public static final String MEDIUM = "p-m";
-        public static final String LARGE = "p-l";
 
         private Padding() {
         }
@@ -261,7 +242,6 @@ public final class Tailwind {
         }
 
         public static final class Horizontal {
-            public static final String CONTAINER = "px-inline-container";
             public static final String XSMALL = "px-xs";
             public static final String MEDIUM = "px-m";
             public static final String LARGE = "px-l";
@@ -273,7 +253,6 @@ public final class Tailwind {
         public static final class Vertical {
             public static final String CONTAINER = "py-block-container";
             public static final String LARGE = "py-l";
-            public static final String XLARGE = "py-xl";
 
             private Vertical() {
             }
