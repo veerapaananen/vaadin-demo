@@ -4,6 +4,7 @@ import com.vaadin.demo.ui.component.ViewFooter;
 import com.vaadin.demo.ui.component.ViewHeader;
 import com.vaadin.demo.ui.component.ViewHeading;
 import com.vaadin.demo.ui.util.Lucide;
+import com.vaadin.demo.ui.util.Tailwind.Color;
 import com.vaadin.demo.ui.util.Tailwind.Margin;
 import com.vaadin.demo.ui.util.Theme;
 import com.vaadin.demo.ui.view.*;
@@ -16,6 +17,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.html.Hr;
+import com.vaadin.flow.component.icon.SvgIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.menubar.MenuBarVariant;
 import com.vaadin.flow.component.notification.Notification;
@@ -67,15 +69,15 @@ public class MainLayout extends AppLayout {
         workspaceNav.addThemeVariants(SideNavVariant.AURA_FILLED);
         workspaceNav.addItem(new SideNavItem("Products", ProductsView.class, Lucide.BARCODE.create()));
         workspaceNav.addItem(new SideNavItem("Users", UsersView.class, Lucide.USERS.create()));
-        workspaceNav.addItem(placeholderItem("Reports", Lucide.FILE_CHART_COLUMN_INCREASING));
+        workspaceNav.addItem(createPlaceholderItem("Reports", Lucide.FILE_CHART_COLUMN_INCREASING));
         workspaceNav.setCollapsible(true);
 
         SideNav growthNav = new SideNav("Growth");
         growthNav.addThemeVariants(SideNavVariant.AURA_FILLED);
-        growthNav.addItem(placeholderItem("Analytics", Lucide.CHART_PIE));
-        growthNav.addItem(placeholderItem("Revenue", Lucide.PIGGY_BANK));
-        growthNav.addItem(placeholderItem("Engagement", Lucide.ACTIVITY));
-        growthNav.addItem(placeholderItem("Billing", Lucide.CREDIT_CARD));
+        growthNav.addItem(createPlaceholderItem("Analytics", Lucide.CHART_PIE));
+        growthNav.addItem(createPlaceholderItem("Revenue", Lucide.PIGGY_BANK));
+        growthNav.addItem(createPlaceholderItem("Engagement", Lucide.ACTIVITY));
+        growthNav.addItem(createPlaceholderItem("Billing", Lucide.CREDIT_CARD));
         growthNav.setCollapsible(true);
 
         SideNav adminNav = new SideNav("Admin");
@@ -85,7 +87,15 @@ public class MainLayout extends AppLayout {
 
         Scroller scroller = new Scroller();
         scroller.addThemeVariants(ScrollerVariant.OVERFLOW_INDICATORS);
-        scroller.getElement().appendChild(nav.getElement(), new Hr().getElement(), workspaceNav.getElement(), new Hr().getElement(), growthNav.getElement(), new Hr().getElement(), adminNav.getElement());
+        scroller.getElement().appendChild(
+                nav.getElement(),
+                new Hr().getElement(),
+                workspaceNav.getElement(),
+                new Hr().getElement(),
+                growthNav.getElement(),
+                new Hr().getElement(),
+                adminNav.getElement()
+        );
         return scroller;
     }
 
@@ -101,32 +111,45 @@ public class MainLayout extends AppLayout {
         user.add(new Text("John Smith"));
         SubMenu userMenu = user.getSubMenu();
 
-        userMenu.addItem("Profile");
-        userMenu.addItem("Preferences");
-        addThemeItems(userMenu.addItem("Theme").getSubMenu());
+        createMenuItem(userMenu, "Profile", Lucide.USER);
+        createMenuItem(userMenu, "Settings", Lucide.SETTINGS);
+        createThemeItems(createMenuItem(userMenu, "Theme", Lucide.PALETTE).getSubMenu());
         userMenu.addSeparator();
-        userMenu.addItem("Help");
+        createMenuItem(userMenu, "Help", Lucide.LIFE_BUOY);
         userMenu.addSeparator();
-        userMenu.addItem("Sign out");
+        createMenuItem(userMenu, "Sign out", Lucide.LOG_OUT);
 
         return new ViewFooter(menuBar);
     }
 
-    private void addThemeItems(SubMenu themeMenu) {
-        MenuItem system = themeMenu.addItem("System");
-        system.setCheckable(true);
+    private void createThemeItems(SubMenu themeMenu) {
+        MenuItem system = createMenuItem(themeMenu, "System", Lucide.MONITOR_SMARTPHONE, true);
         system.setChecked(true);
-        MenuItem light = themeMenu.addItem("Light");
-        light.setCheckable(true);
-        MenuItem dark = themeMenu.addItem("Dark");
-        dark.setCheckable(true);
+        MenuItem light = createMenuItem(themeMenu, "Light", Lucide.SUN, true);
+        MenuItem dark = createMenuItem(themeMenu, "Dark", Lucide.MOON, true);
 
         List.of(system, light, dark).forEach(item ->
                 item.addClickListener(e -> List.of(system, light, dark).forEach(t -> t.setChecked(t == item))));
-
     }
 
-    private SideNavItem placeholderItem(String label, Lucide icon) {
+    private MenuItem createMenuItem(SubMenu subMenu, String label, Lucide icon) {
+        return createMenuItem(subMenu, label, icon, false);
+    }
+
+    private MenuItem createMenuItem(SubMenu subMenu, String label, Lucide icon, boolean checkable) {
+        SvgIcon svgIcon = icon.create();
+        svgIcon.addClassName(Color.SECONDARY);
+
+        MenuItem item = subMenu.addItem(label);
+        item.addComponentAsFirst(svgIcon);
+        item.setCheckable(checkable);
+        if (!checkable) {
+            item.getStyle().set("--vaadin-item-checkmark-display", "none");
+        }
+        return item;
+    }
+
+    private SideNavItem createPlaceholderItem(String label, Lucide icon) {
         SideNavItem item = new SideNavItem(label);
         item.setPrefixComponent(icon.create());
         item.getElement().addEventListener("click",

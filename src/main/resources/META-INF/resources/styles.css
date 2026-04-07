@@ -6,6 +6,7 @@
 @config "./tailwind.config.js";
 
 html {
+  --vaadin-icon-visual-size: 80%;
   --vaadin-user-color: var(--aura-accent-color);
   height: 100dvh;
 }
