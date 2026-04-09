@@ -5,6 +5,7 @@ import com.vaadin.demo.service.SourceService;
 import com.vaadin.demo.ui.component.SourceViewerDialog;
 import com.vaadin.demo.ui.component.View;
 import com.vaadin.demo.ui.component.ViewHeader;
+import com.vaadin.demo.ui.util.Aura;
 import com.vaadin.demo.ui.util.Lucide;
 import com.vaadin.demo.ui.util.Tailwind.*;
 import com.vaadin.flow.component.Text;
@@ -37,6 +38,8 @@ import com.vaadin.flow.router.Route;
 public class UsersView extends View {
 
     public UsersView(SourceService sourceService) {
+        addClassNames(Aura.SURFACE_SOLID, Overflow.HIDDEN);
+
         ViewHeader header = createHeader(sourceService);
         Grid<SampleData.User> grid = createUsersGrid();
 
