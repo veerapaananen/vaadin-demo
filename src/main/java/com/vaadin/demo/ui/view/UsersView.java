@@ -110,7 +110,8 @@ public class UsersView extends View {
                     return edit;
                 })
                 .setAutoWidth(true)
-                .setFlexGrow(0);
+                .setFlexGrow(0)
+                .setFrozenToEnd(true);
 
         var dataView = grid.setItems(SampleData.users());
 

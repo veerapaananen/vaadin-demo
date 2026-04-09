@@ -87,7 +87,7 @@ public class ProductsView extends View {
             edit.setAriaLabel("Edit");
             edit.setTooltipText("Edit");
             return edit;
-        }).setAutoWidth(true).setFlexGrow(0);
+        }).setAutoWidth(true).setFlexGrow(0).setFrozenToEnd(true);
 
         var dataView = grid.setItems(SampleData.products());
 
