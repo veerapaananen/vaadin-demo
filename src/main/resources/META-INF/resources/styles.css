@@ -5,18 +5,6 @@
 @import "./tailwind.css";
 @config "./tailwind.config.js";
 
-html {
-  --vaadin-icon-visual-size: 80%;
-  --vaadin-user-color: var(--aura-accent-color);
-  height: 100dvh;
-}
-
-body {
-  height: 100%;
-  margin: 0;
-  transition: none !important;
-}
-
 hr {
   background: var(--vaadin-border-color-secondary);
   border: 0;
