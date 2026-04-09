@@ -14,6 +14,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.card.Card;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
@@ -129,6 +130,7 @@ public class DashboardView extends View {
         grid.addColumn(o -> o.date().format(dateTimeFormatter)).setHeader("Date").setAutoWidth(true).setFlexGrow(0).setSortable(true);
 
         grid.addThemeVariants(GridVariant.NO_BORDER);
+        grid.setSelectionMode(SelectionMode.NONE);
         grid.setHeightFull();
         grid.setItems(SampleData.orders());
         return grid;

@@ -16,6 +16,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.H1;
@@ -70,6 +71,7 @@ public class ProductsView extends View {
     private Grid<SampleData.Product> createProductsGrid() {
         Grid<SampleData.Product> grid = new Grid<>(SampleData.Product.class, false);
         grid.addThemeVariants(GridVariant.NO_BORDER);
+        grid.setSelectionMode(SelectionMode.NONE);
 
         var nameCol = grid.addColumn(SampleData.Product::name)
                 .setHeader("Name").setWidth("200px").setFlexGrow(2).setResizable(true).setSortable(true);

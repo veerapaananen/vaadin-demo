@@ -18,6 +18,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.Div;
@@ -72,6 +73,7 @@ public class UsersView extends View {
     private Grid<SampleData.User> createUsersGrid() {
         Grid<SampleData.User> grid = new Grid<>(SampleData.User.class, false);
         grid.addThemeVariants(GridVariant.NO_BORDER);
+        grid.setSelectionMode(SelectionMode.NONE);
 
         var nameCol = grid.addComponentColumn(user -> {
                     Avatar avatar = new Avatar(user.name());
