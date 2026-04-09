@@ -5,7 +5,6 @@ import com.vaadin.demo.service.SourceService;
 import com.vaadin.demo.ui.component.SourceViewerDialog;
 import com.vaadin.demo.ui.component.View;
 import com.vaadin.demo.ui.component.ViewHeader;
-import com.vaadin.demo.ui.util.Aura;
 import com.vaadin.demo.ui.util.Lucide;
 import com.vaadin.demo.ui.util.Tailwind.*;
 import com.vaadin.flow.component.Text;
@@ -16,7 +15,6 @@ import com.vaadin.flow.component.badge.Badge;
 import com.vaadin.flow.component.badge.BadgeVariant;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.card.Card;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
@@ -39,19 +37,10 @@ import com.vaadin.flow.router.Route;
 public class UsersView extends View {
 
     public UsersView(SourceService sourceService) {
-        add(
-                createHeader(sourceService),
-                createContent()
-        );
-    }
+        ViewHeader header = createHeader(sourceService);
+        Grid<SampleData.User> grid = createUsersGrid();
 
-    /**
-     * Main content area containing the users card.
-     */
-    private Div createContent() {
-        Div content = new Div(createUsersCard());
-        content.addClassNames(Display.FLEX, Overflow.HIDDEN, Padding.Bottom.LARGE, Padding.Horizontal.LARGE);
-        return content;
+        add(header, grid);
     }
 
     /**
@@ -75,22 +64,11 @@ public class UsersView extends View {
     }
 
     /**
-     * Card containing the users grid.
-     */
-    private Card createUsersCard() {
-        Card card = new Card();
-        card.add(createUsersGrid());
-        card.addClassNames(Aura.SURFACE_SOLID, Width.FULL);
-        return card;
-    }
-
-    /**
      * Grid listing users with name, email, role, last login, and actions columns.
      */
     private Grid<SampleData.User> createUsersGrid() {
         Grid<SampleData.User> grid = new Grid<>(SampleData.User.class, false);
         grid.addThemeVariants(GridVariant.NO_BORDER);
-        grid.setHeightFull();
 
         var nameCol = grid.addComponentColumn(user -> {
                     Avatar avatar = new Avatar(user.name());

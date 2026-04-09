@@ -33,10 +33,10 @@ import static com.vaadin.demo.ui.util.Tailwind.*;
 public class SettingsView extends View {
 
     public SettingsView(SourceService sourceService) {
-        add(
-                createHeader(sourceService),
-                createScroller()
-        );
+        ViewHeader header = createHeader(sourceService);
+        Scroller scroller = createScroller();
+
+        add(header, scroller);
     }
 
     /**

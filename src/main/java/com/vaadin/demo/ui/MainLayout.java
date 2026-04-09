@@ -130,9 +130,9 @@ public class MainLayout extends AppLayout {
         MenuItem dark = createMenuItem(themeMenu, "Dark", Lucide.MOON, true);
 
         var schemes = Map.of(
-            system, ColorScheme.Value.SYSTEM,
-            light, ColorScheme.Value.LIGHT,
-            dark, ColorScheme.Value.DARK
+                system, ColorScheme.Value.SYSTEM,
+                light, ColorScheme.Value.LIGHT,
+                dark, ColorScheme.Value.DARK
         );
 
         UI.getCurrent().getPage().setColorScheme(ColorScheme.Value.SYSTEM);

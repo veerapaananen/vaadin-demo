@@ -92,3 +92,12 @@ vaadin-master-detail-layout:not([drawer], [stack]) [slot='detail'] .aura-view > 
     padding-inline-start: var(--vaadin-padding-s);
   }
 }
+
+.aura-view > .aura-view-header + vaadin-grid {
+  &::part(first-column-cell) {
+    --vaadin-grid-cell-padding: var(--vaadin-padding-block-container) var(--vaadin-padding-inline-container) var(--vaadin-padding-block-container) calc(var(--vaadin-padding-s) + var(--vaadin-padding-m));
+  }
+  &::part(last-column-cell) {
+    --vaadin-grid-cell-padding: var(--vaadin-padding-block-container) var(--vaadin-padding-m) var(--vaadin-padding-block-container) var(--vaadin-padding-inline-container);
+  }
+}

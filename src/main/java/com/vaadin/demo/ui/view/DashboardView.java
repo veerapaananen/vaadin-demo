@@ -38,10 +38,10 @@ import static com.vaadin.demo.ui.util.Tailwind.*;
 public class DashboardView extends View {
 
     public DashboardView(SourceService sourceService) {
-        add(
-                createHeader(sourceService),
-                createContent()
-        );
+        ViewHeader header = createHeader(sourceService);
+        Div content = createContent();
+
+        add(header, content);
     }
 
     /**

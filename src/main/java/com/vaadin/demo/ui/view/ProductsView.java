@@ -12,14 +12,12 @@ import com.vaadin.flow.component.badge.Badge;
 import com.vaadin.flow.component.badge.BadgeVariant;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.card.Card;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -30,26 +28,19 @@ import com.vaadin.flow.data.provider.ListDataView;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
-import static com.vaadin.demo.ui.util.Tailwind.*;
+import static com.vaadin.demo.ui.util.Tailwind.Overflow;
 
 @Route("products")
 @PageTitle("Products — Vaadin Demo")
 public class ProductsView extends View {
 
     public ProductsView(SourceService sourceService) {
-        add(
-                createHeader(sourceService),
-                createContent()
-        );
-    }
+        addClassNames(Aura.SURFACE_SOLID, Overflow.HIDDEN);
 
-    /**
-     * Main content area containing the products card.
-     */
-    private Div createContent() {
-        Div content = new Div(createProductsCard());
-        content.addClassNames(Display.FLEX, Overflow.HIDDEN, Padding.Bottom.LARGE, Padding.Horizontal.LARGE);
-        return content;
+        ViewHeader header = createHeader(sourceService);
+        Grid<SampleData.Product> grid = createProductsGrid();
+
+        add(header, grid);
     }
 
     /**
@@ -71,16 +62,6 @@ public class ProductsView extends View {
         viewSource.setTooltipText("View source");
 
         return new ViewHeader(toggle, title, addProduct, viewSource);
-    }
-
-    /**
-     * Card containing the products grid.
-     */
-    private Card createProductsCard() {
-        Card card = new Card();
-        card.add(createProductsGrid());
-        card.addClassNames(Aura.SURFACE_SOLID, Width.FULL);
-        return card;
     }
 
     /**
@@ -109,7 +90,6 @@ public class ProductsView extends View {
         }).setAutoWidth(true).setFlexGrow(0);
 
         var dataView = grid.setItems(SampleData.products());
-        grid.setHeightFull();
 
         appendFilterRow(grid, dataView, nameCol, categoryCol, statusCol, priceCol, stockCol, actionsCol);
         return grid;

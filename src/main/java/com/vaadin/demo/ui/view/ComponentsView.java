@@ -120,10 +120,10 @@ public class ComponentsView extends View {
     );
 
     public ComponentsView(SourceService sourceService) {
-        add(
-                createHeader(sourceService),
-                createScroller()
-        );
+        ViewHeader header = createHeader(sourceService);
+        Scroller scroller = createScroller();
+
+        add(header, scroller);
     }
 
     /**
