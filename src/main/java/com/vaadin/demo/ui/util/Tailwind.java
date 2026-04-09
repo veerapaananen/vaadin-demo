@@ -152,7 +152,6 @@ public final class Tailwind {
 
     public static final class JustifyContent {
         public static final String CENTER = "justify-center";
-        public static final String START = "justify-start";
 
         private JustifyContent() {
         }
