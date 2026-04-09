@@ -31,7 +31,7 @@ import com.vaadin.flow.component.sidenav.SideNavVariant;
 import com.vaadin.flow.router.Layout;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
-import java.util.List;
+import java.util.Map;
 
 @Layout
 @AnonymousAllowed
@@ -126,15 +126,21 @@ public class MainLayout extends AppLayout {
 
     private void createThemeItems(SubMenu themeMenu) {
         MenuItem system = createMenuItem(themeMenu, "System", Lucide.MONITOR_SMARTPHONE, true);
-        system.setChecked(true);
         MenuItem light = createMenuItem(themeMenu, "Light", Lucide.SUN, true);
         MenuItem dark = createMenuItem(themeMenu, "Dark", Lucide.MOON, true);
 
-        var items = List.of(system, light, dark);
-        items.forEach(item -> item.addClickListener(e -> {
-            var scheme = item == light ? ColorScheme.Value.LIGHT : item == dark ? ColorScheme.Value.DARK : null;
+        var schemes = Map.of(
+            system, ColorScheme.Value.SYSTEM,
+            light, ColorScheme.Value.LIGHT,
+            dark, ColorScheme.Value.DARK
+        );
+
+        UI.getCurrent().getPage().setColorScheme(ColorScheme.Value.SYSTEM);
+        system.setChecked(true);
+
+        schemes.forEach((item, scheme) -> item.addClickListener(e -> {
             UI.getCurrent().getPage().setColorScheme(scheme);
-            items.forEach(t -> t.setChecked(t == item));
+            schemes.keySet().forEach(t -> t.setChecked(t == item));
         }));
     }
 
