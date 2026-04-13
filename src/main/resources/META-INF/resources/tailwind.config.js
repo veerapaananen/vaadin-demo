@@ -87,9 +87,9 @@ export default {
 
       // ─── Border radius ────────────────────────────────────────────
       borderRadius: {
-        s: 'var(--vaadin-radius-s)',
-        m: 'var(--vaadin-radius-m)',
-        l: 'var(--vaadin-radius-l)',
+        sm: 'var(--vaadin-radius-s)',
+        md: 'var(--vaadin-radius-m)',
+        lg: 'var(--vaadin-radius-l)',
       },
     },
   },
