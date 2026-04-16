@@ -21,7 +21,7 @@ public final class Tailwind {
     }
 
     public static final class BorderRadius {
-        public static final String MEDIUM = "rounded-m";
+        public static final String MEDIUM = "rounded-md";
 
         private BorderRadius() {
         }

@@ -7,6 +7,7 @@ import com.vaadin.demo.ui.component.View;
 import com.vaadin.demo.ui.component.ViewHeader;
 import com.vaadin.demo.ui.util.Aura;
 import com.vaadin.demo.ui.util.Lucide;
+import com.vaadin.demo.ui.util.Notifications;
 import com.vaadin.demo.ui.util.Tailwind.*;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -25,7 +26,6 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
@@ -56,7 +56,7 @@ public class UsersView extends View {
 
         H1 title = new H1("Users");
 
-        Button inviteUser = new Button("Invite User", Lucide.MAIL_PLUS.create(), e -> notify("Invite not yet implemented"));
+        Button inviteUser = new Button("Invite User", Lucide.MAIL_PLUS.create(), e -> Notifications.show("Invite not yet implemented"));
         inviteUser.addThemeVariants(ButtonVariant.PRIMARY);
 
         Button viewSource = new Button(Lucide.CODE.create(), e -> new SourceViewerDialog(UsersView.class, sourceService).open());
@@ -200,7 +200,7 @@ public class UsersView extends View {
 
         Button save = new Button("Save Changes", e -> {
             dialog.close();
-            notify(user.name() + "'s role updated to " + role.getValue(), NotificationVariant.SUCCESS);
+            Notifications.show(user.name() + "'s role updated to " + role.getValue(), NotificationVariant.SUCCESS);
         });
         save.addThemeVariants(ButtonVariant.PRIMARY);
 
@@ -233,11 +233,4 @@ public class UsersView extends View {
         return avatarRow;
     }
 
-    /**
-     * Shows a toast notification at the bottom-end of the screen.
-     */
-    private void notify(String message, NotificationVariant... variants) {
-        Notification notification = Notification.show(message);
-        notification.addThemeVariants(variants);
-    }
 }

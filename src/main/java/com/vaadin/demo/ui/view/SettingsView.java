@@ -6,6 +6,7 @@ import com.vaadin.demo.ui.component.SourceViewerDialog;
 import com.vaadin.demo.ui.component.View;
 import com.vaadin.demo.ui.component.ViewHeader;
 import com.vaadin.demo.ui.util.Lucide;
+import com.vaadin.demo.ui.util.Notifications;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -13,7 +14,6 @@ import com.vaadin.flow.component.card.Card;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.*;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.ScrollerVariant;
@@ -121,7 +121,7 @@ public class SettingsView extends View {
         form.setColumnWidth("16rem");
         form.setExpandFields(true);
 
-        Button save = new Button("Save Changes", e -> notify("General settings saved", NotificationVariant.SUCCESS));
+        Button save = new Button("Save Changes", e -> Notifications.show("General settings saved", NotificationVariant.SUCCESS));
         save.addThemeVariants(ButtonVariant.PRIMARY);
 
         Div layout = new Div(form, save);
@@ -145,7 +145,7 @@ public class SettingsView extends View {
         form.setExpandColumns(true);
         form.setExpandFields(true);
 
-        Button save = new Button("Save Preferences", e -> notify("Notification preferences saved", NotificationVariant.SUCCESS));
+        Button save = new Button("Save Preferences", e -> Notifications.show("Notification preferences saved", NotificationVariant.SUCCESS));
         save.addThemeVariants(ButtonVariant.PRIMARY);
 
         Div layout = new Div(form, save);
@@ -166,7 +166,7 @@ public class SettingsView extends View {
         form.setColumnWidth("16rem");
         form.setExpandFields(true);
 
-        Button changePassword = new Button("Change Password", e -> notify("Password change is not implemented in this demo"));
+        Button changePassword = new Button("Change Password", e -> Notifications.show("Password change is not implemented in this demo"));
         changePassword.addClassNames(Margin.Top.LARGE);
         changePassword.addThemeVariants(ButtonVariant.PRIMARY);
 
@@ -179,7 +179,7 @@ public class SettingsView extends View {
         Paragraph twoFactorDescription = new Paragraph("Add an extra layer of security to your account.");
         twoFactorDescription.addClassNames(Color.SECONDARY, FontSize.SMALL, Margin.ZERO);
 
-        Button enableTwoFactor = new Button("Enable 2FA", e -> notify("2FA setup is not implemented in this demo"));
+        Button enableTwoFactor = new Button("Enable 2FA", e -> Notifications.show("2FA setup is not implemented in this demo"));
         enableTwoFactor.addClassNames(Margin.Top.LARGE);
 
         Div layout = new Div(form, changePassword, hr, twoFactorHeading, twoFactorDescription, enableTwoFactor);
@@ -214,12 +214,12 @@ public class SettingsView extends View {
         info.addClassNames(Display.FLEX, Flex.GROW, FlexDirection.COLUMN);
 
         Checkbox checkbox = new Checkbox(integration.enabled());
-        checkbox.addValueChangeListener(ev -> notify(
+        checkbox.addValueChangeListener(ev -> Notifications.show(
                 ev.getValue() ? integration.name() + " enabled" : integration.name() + " disabled"));
         checkbox.setAriaLabel("Enable " + integration.name());
         checkbox.setTooltipText("Enable " + integration.name());
 
-        Button configure = new Button("Configure", e -> notify("Integration configuration is not yet implemented"));
+        Button configure = new Button("Configure", e -> Notifications.show("Integration configuration is not yet implemented"));
 
         Div row = new Div(checkbox, info, configure);
         row.addClassNames(Display.FLEX, Gap.SMALL);
@@ -229,11 +229,4 @@ public class SettingsView extends View {
         return card;
     }
 
-    /**
-     * Shows a toast notification.
-     */
-    private void notify(String message, NotificationVariant... variants) {
-        Notification notification = Notification.show(message);
-        notification.addThemeVariants(variants);
-    }
 }

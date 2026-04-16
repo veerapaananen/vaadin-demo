@@ -7,6 +7,7 @@ import com.vaadin.demo.ui.component.View;
 import com.vaadin.demo.ui.component.ViewHeader;
 import com.vaadin.demo.ui.util.Aura;
 import com.vaadin.demo.ui.util.Lucide;
+import com.vaadin.demo.ui.util.Notifications;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.badge.Badge;
 import com.vaadin.flow.component.badge.BadgeVariant;
@@ -20,7 +21,6 @@ import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.NumberField;
@@ -169,7 +169,7 @@ public class ProductsView extends View {
 
         Button save = new Button("Save", e -> {
             dialog.close();
-            notify(product == null ? "Product created successfully" : "Product updated successfully", NotificationVariant.SUCCESS);
+            Notifications.show(product == null ? "Product created successfully" : "Product updated successfully", NotificationVariant.SUCCESS);
         });
         save.addThemeVariants(ButtonVariant.PRIMARY);
 
@@ -209,11 +209,4 @@ public class ProductsView extends View {
         return form;
     }
 
-    /**
-     * Shows a toast notification at the bottom-end of the screen.
-     */
-    private void notify(String message, NotificationVariant... variants) {
-        Notification notification = Notification.show(message);
-        notification.addThemeVariants(variants);
-    }
 }

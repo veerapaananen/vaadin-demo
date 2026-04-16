@@ -7,6 +7,7 @@ import com.vaadin.demo.ui.component.View;
 import com.vaadin.demo.ui.component.ViewHeader;
 import com.vaadin.demo.ui.util.Aura;
 import com.vaadin.demo.ui.util.Lucide;
+import com.vaadin.demo.ui.util.Notifications;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.badge.Badge;
 import com.vaadin.flow.component.badge.BadgeVariant;
@@ -22,7 +23,6 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -111,8 +111,8 @@ public class DashboardView extends View {
      */
     private MenuBar createOrdersMenuBar() {
         MenuBar menuBar = new MenuBar();
-        menuBar.addItem("Export", e -> notify("Export started — your file will be ready shortly"));
-        menuBar.addItem("Refresh", e -> notify("Data refreshed", NotificationVariant.SUCCESS));
+        menuBar.addItem("Export", e -> Notifications.show("Export started — your file will be ready shortly"));
+        menuBar.addItem("Refresh", e -> Notifications.show("Data refreshed", NotificationVariant.SUCCESS));
         return menuBar;
     }
 
@@ -172,11 +172,4 @@ public class DashboardView extends View {
         return badge;
     }
 
-    /**
-     * Shows a toast notification at the bottom-end of the screen.
-     */
-    private void notify(String message, NotificationVariant... variants) {
-        Notification notification = Notification.show(message, 3000, Notification.Position.BOTTOM_END);
-        notification.addThemeVariants(variants);
-    }
 }
